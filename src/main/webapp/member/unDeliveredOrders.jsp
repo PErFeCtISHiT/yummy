@@ -1,3 +1,4 @@
+<%@ page import="yummy.util.NamedContext" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -32,37 +33,46 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>餐厅主页</title>
+    <title>运送中的订单</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/restaurant.js"></script>
+    <script src="../js/user/member.js"></script>
     <script src="../js/global.js"></script>
+    <link rel="stylesheet" type="text/css" href="../js/default.css">
 </head>
-<body>
+<script>
+    unDeliveredOrders = <%=session.getAttribute(NamedContext.ORDERS)%>
+</script>
+<body onload=loadOrders()>
 <header class="am-topbar">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
 
+
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/info.jsp'>餐厅信息
-            </button>
-        </div>
-        <div class=am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/addProduct.jsp'>添加单品
-            </button>
-        </div>
-        <div class=am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/addOrder.jsp'>添加套餐
-            </button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
         </div>
     </div>
 </header>
+
+<form class="am-form">
+    <fieldset>
+        <legend>订单</legend>
+
+        <div>
+            <label for="order">运送中的订单</label>
+            <div id="order">
+
+            </div>
+        </div>
+
+
+    </fieldset>
+</form>
 </body>
 </html>

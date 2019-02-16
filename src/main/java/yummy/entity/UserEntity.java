@@ -3,6 +3,7 @@ package yummy.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author: pis
@@ -20,6 +21,8 @@ public class UserEntity {
     private RestaurantMessageEntity restaurantMessageEntity;
     private String salt = "";
     private String userPassword;
+    private Set<ProductEntity> productEntities;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -105,5 +108,15 @@ public class UserEntity {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonIgnore
+    public Set<ProductEntity> getProductEntities() {
+        return productEntities;
+    }
+
+    public void setProductEntities(Set<ProductEntity> productEntities) {
+        this.productEntities = productEntities;
     }
 }

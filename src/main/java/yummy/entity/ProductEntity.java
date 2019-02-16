@@ -1,6 +1,9 @@
 package yummy.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.sql.Date;
 
 /**
  * @author: pis
@@ -14,7 +17,9 @@ public class ProductEntity {
     private String productName;
     private Integer num;
     private Double price;
-
+    private Date endDate;
+    private String type;
+    private UserEntity restaurant;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -54,5 +59,36 @@ public class ProductEntity {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Basic
+    @Column(name = "end_date", nullable = false)
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    @Basic
+    @Column(name = "product_type", nullable = false)
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @OneToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
+    public UserEntity getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(UserEntity restaurant) {
+        this.restaurant = restaurant;
     }
 }

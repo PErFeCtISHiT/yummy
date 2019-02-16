@@ -12,9 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import yummy.entity.AddressEntity;
+import yummy.entity.ProductEntity;
+import yummy.entity.RestaurantMessageEntity;
 import yummy.entity.UserEntity;
-import yummy.service.MemberService;
+import yummy.service.RestaurantService;
 import yummy.service.UserService;
 import yummy.util.JsonHelper;
 import yummy.util.NamedContext;
@@ -22,15 +23,19 @@ import yummy.util.NamedContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/user")
 public class HomeController {
     private final UserService userService;
 
+    private final RestaurantService restaurantService;
     @Autowired
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, RestaurantService restaurantService) {
         this.userService = userService;
+        this.restaurantService = restaurantService;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -62,6 +67,24 @@ public class HomeController {
         HttpSession session = request.getSession(true);
         session.setAttribute(NamedContext.USER, userEntity);
         msg.put(NamedContext.MES, NamedContext.SUCCESS);
+        if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.MEMBER)){
+            List<RestaurantMessageEntity> restaurantMessageEntities = restaurantService.findAllRestaurantMessages();
+            for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
+                restaurantMessageEntity.setAddressEntity(null);
+                restaurantMessageEntity.setRestaurantEntity(null);
+            }
+            JSONArray array = new JSONArray(restaurantMessageEntities);
+            request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
+        }
+        if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.RESTAURANT)){
+            Set<ProductEntity> productEntities = userEntity.getProductEntities();
+            for(ProductEntity productEntity : productEntities)
+                productEntity.setRestaurant(null);
+            JSONArray array = new JSONArray(productEntities);
+            for(ProductEntity productEntity : productEntities)
+                productEntity.setRestaurant(userEntity);
+            request.getSession(true).setAttribute(NamedContext.PRODUCTS,array);
+        }
         msg.put(NamedContext.USERTYPE, userEntity.getSysRoleEntity().getRole());
         JsonHelper.jsonToResponse(response, msg);
     }

@@ -45,16 +45,32 @@
 
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
         <div class="am-topbar-right">
-            <button title="用户将被销毁，不可恢复" class="am-btn am-btn-danger am-topbar-btn am-btn-sm" onclick=destroyUser()>注销用户</button>
+            <button title="用户将被销毁，不可恢复" class="am-btn am-btn-danger am-topbar-btn am-btn-sm" onclick=destroyUser()>
+                注销用户
+            </button>
         </div>
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='/member/info.jsp'>个人信息</button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                    onclick=window.location.href='/member/info.jsp'>个人信息
+            </button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='/member/address.jsp'>送餐地址</button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                    onclick=window.location.href='/member/address.jsp'>送餐地址
+            </button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                    onclick=window.location.href='/member/choose.jsp?page=0'>点餐
+            </button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                    onclick=getUndeliveredOrder()>未送达订单
+            </button>
         </div>
     </div>
 </header>

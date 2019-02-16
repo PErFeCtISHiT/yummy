@@ -17,7 +17,7 @@ public class ApplyEntity {
     private String addressName;
     private Double longitude;
     private Double latitude;
-    private Date applyDate;
+    private Date applyDate = new java.sql.Date(new Date().getTime());
     private boolean approved = false;
 
     @Id

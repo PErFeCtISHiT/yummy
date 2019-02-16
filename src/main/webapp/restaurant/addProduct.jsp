@@ -47,6 +47,9 @@
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
+        </div>
     </div>
 </header>
 <form class="am-form">
@@ -54,12 +57,22 @@
         <legend>添加单品</legend>
 
         <div class="am-form-group">
-            <label for="name">单品名称</label>
-            <input type="number" class="" id="name">
+            <label for="name">名称</label>
+            <input type="text" value="名称" class="" id="name">
         </div>
 
         <div class="am-form-group">
-            <label for="type1">餐厅类型</label>
+            <label for="num">数量</label>
+            <input type="number" value="0" min="0" class="" id="num">
+        </div>
+
+        <div class="am-form-group">
+            <label for="price">单价</label>
+            <input type="number" value="0.0" min="0.0" step="0.01" class="" id="price">
+        </div>
+
+        <div class="am-form-group">
+            <label for="type1">类型</label>
             <label class="am-radio-inline" id="type1">
                 <input type="radio" value="美食" name="docInlineRadio"> 美食
             </label>
@@ -70,22 +83,15 @@
                 <input type="radio" value="甜品" name="docInlineRadio"> 甜品
             </label>
         </div>
+
         <div class="am-form-group">
-            <label for="address">餐厅地址</label>
-            <div class="am-btn-group">
-                <button type="button" class="am-btn am-btn-success am-radius" id="doc-prompt-toggle"
-                        onclick=addAddress()>修改地址
-                </button>
-            </div>
-            <select multiple class="" id="address">
-
-            </select>
+            <label for="date">截止日期</label>
+            <input type="date" id="date">
         </div>
-
 
         <div class="am-btn-group">
             <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>返回</button>
-            <button type="button" class="am-btn am-btn-default" onclick=modifyRestaurant()>修改信息</button>
+            <button type="button" class="am-btn am-btn-default" onclick=addProduct()>返回</button>
         </div>
     </fieldset>
 </form>

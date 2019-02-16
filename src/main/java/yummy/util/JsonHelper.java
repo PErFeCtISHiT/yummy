@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 
 
 /**
@@ -48,5 +49,9 @@ public class JsonHelper {
         } catch (IOException e) {
             logger.error(NamedContext.ERROR);
         }
+    }
+    public static double scale(double d){
+        BigDecimal bd = new BigDecimal(d);
+        return bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

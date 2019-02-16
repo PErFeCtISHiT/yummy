@@ -1,3 +1,4 @@
+<%@ page import="yummy.util.NamedContext" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -32,10 +33,11 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>餐厅主页</title>
+    <title>添加套餐</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/restaurant.js"></script>
     <script src="../js/global.js"></script>
+    <link rel="stylesheet" type="text/css" href="../js/default.css">
 </head>
 <body>
 <header class="am-topbar">
@@ -48,21 +50,52 @@
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/info.jsp'>餐厅信息
-            </button>
-        </div>
-        <div class=am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/addProduct.jsp'>添加单品
-            </button>
-        </div>
-        <div class=am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=window.location.href='/restaurant/addOrder.jsp'>添加套餐
-            </button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
         </div>
     </div>
 </header>
+<form class="am-form">
+    <fieldset>
+        <legend>添加套餐</legend>
+
+        <div class="am-form-group">
+            <label for="name">名称</label>
+            <input type="text" value="名称" class="" id="name">
+        </div>
+
+        <div class="am-form-group">
+            <label for="price">价格</label>
+            <input type="number" value="0.0" min="0.0" step="0.01" class="" id="price" contenteditable="false">
+        </div>
+
+        <div class="am-form-group">
+            <label for="date">截止日期</label>
+            <input type="date" id="date">
+        </div>
+
+        <div class="am-form-group">
+            <label for="discount">折扣</label>
+            <input type="number" value="0.0" min="0.0" max="1.0" step="0.01" class="" id="discount">
+        </div>
+
+        <div>
+            <label for="product">添加单品</label>
+            <div id="product">
+
+            </div>
+        </div>
+        <div class="am-btn-group">
+            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
+            <button type="button" class="am-btn am-btn-default" onclick=addOrder()>添加</button>
+        </div>
+    </fieldset>
+</form>
+
+
+<script>
+    var obj = <%=session.getAttribute(NamedContext.PRODUCTS)%>;
+    loadProducts();
+</script>
+
 </body>
 </html>

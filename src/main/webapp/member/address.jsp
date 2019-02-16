@@ -11,6 +11,7 @@
     for (AddressEntity addressEntity : addressEntitySet) {
         addressEntity.setMemberMessageEntity(null);
     }
+    Integer addressId = user.getMemberMessageEntity().getMainAddress().getId();
     JSONArray addressJsonArray = new JSONArray(addressEntitySet);
 %>
 <html>
@@ -66,6 +67,10 @@
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
+
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
+        </div>
     </div>
 </header>
 <form class="am-form">
@@ -79,7 +84,7 @@
                         onclick=addAddress()>+
                 </button>
                 <button type="button" class="am-btn am-btn-primary am-radius" onclick=removeAddress()>-</button>
-
+                <button type="button" class="am-btn am-btn-primary am-radius" onclick=mainAddress()>设为主要地址</button>
             </div>
 
             <select multiple class="" id="address">
@@ -88,14 +93,9 @@
         </div>
         <script charset="UTF-8">
             var addresses = <%=addressJsonArray%>;
-            for (var i = 0; i < addresses.length; i++) {
-                document.getElementById("address").innerHTML += '<option>' + addresses[i].addressName + '</option>'
-            }
+            var mainAddressId = <%=addressId%>;
+            loadAddress();
         </script>
-
-        <p>
-            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>返回</button>
-        </p>
     </fieldset>
 </form>
 </body>

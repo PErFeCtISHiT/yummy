@@ -16,7 +16,7 @@ public class RestaurantMessageEntity {
     private String restaurantType = "美食";//美食、饮品、甜品
     private String restaurantName = "";
     private AddressEntity addressEntity;
-
+    private UserEntity restaurantEntity;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -56,5 +56,15 @@ public class RestaurantMessageEntity {
 
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
+    }
+
+    @OneToOne(mappedBy = "restaurantMessageEntity" ,cascade = CascadeType.MERGE)
+    @JsonIgnore
+    public UserEntity getRestaurantEntity() {
+        return restaurantEntity;
+    }
+
+    public void setRestaurantEntity(UserEntity restaurantEntity) {
+        this.restaurantEntity = restaurantEntity;
     }
 }

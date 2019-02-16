@@ -61,6 +61,9 @@
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
+        </div>
     </div>
 </header>
 <form class="am-form">
@@ -104,7 +107,7 @@
 
 
         <div class="am-btn-group">
-            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>返回</button>
+            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
             <button type="button" class="am-btn am-btn-default" onclick=modifyRestaurant()>修改信息</button>
         </div>
     </fieldset>

@@ -25,4 +25,25 @@ public class NamedContext {
     public static final String UNLOGIN = "unLogin";
     public static final String UNAUTHORIZED = "unauthorized";
     public static final String LOGINTOKEN = "loginToken";
+    public static final String UNPAYED = "unPayed";
+    public static final String UNORDERED = "unOrdered";
+    public static final String RESTAURANT = "restaurant";
+    public static final String PRODUCTS = "products";
+    public static final String MEMBER = "member";
+    public static final String PAGE = "page";
+    public static final String ORDERS = "orders";
+    public static final String ALLPRODUCTS = "allProducts";
+    public static final String PRICE = "price";
+    public static final String PIDLIST = "pidList";
+    public static final String RESTAURANTID = "restaurantId";
+    public static final String PAY = "pay";
+    public static final String MAIL = "mail";
+    public static final String BALANCE = "balance";
+    public static final String PID = "pid";
+    public static final String NUM = "num";
+    public static final String ORDERID = "orderId";
+    public static final String PAYED = "payed";
+    public static final String ADDRESSID = "addressId";
+    public static final String SENTMINUTE = "sentMinute";
+    public static final String PRODUCTNAME = "productName";
 }

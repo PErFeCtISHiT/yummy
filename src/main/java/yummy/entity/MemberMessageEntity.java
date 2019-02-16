@@ -19,6 +19,8 @@ public class MemberMessageEntity {
     private Set<AddressEntity> addressEntitySet;
     private Integer level = 1;
     private Double consume = 0.0;
+    private Double balance = 0.0;
+    private AddressEntity mainAddress;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -78,5 +80,26 @@ public class MemberMessageEntity {
 
     public void setConsume(Double consume) {
         this.consume = consume;
+    }
+
+    @Basic
+    @Column(name = "balance", nullable = false)
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "address_id")
+    @JsonIgnore
+    public AddressEntity getMainAddress() {
+        return mainAddress;
+    }
+
+    public void setMainAddress(AddressEntity mainAddress) {
+        this.mainAddress = mainAddress;
     }
 }
