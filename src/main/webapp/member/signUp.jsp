@@ -41,6 +41,13 @@
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
+    <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='/login.jsp'>
+                返回
+            </button>
+        </div>
+    </div>
 </header>
 <form class="am-form am-form-horizontal" style="position: relative;left:15em;top:8em;max-width: 60%">
 

@@ -12,7 +12,6 @@ import yummy.util.NamedContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author: pis
@@ -146,5 +145,15 @@ public class RestaurantServiceImpl extends PublicServiceImpl implements Restaura
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
+    }
+
+    @Override
+    public boolean saveRestaurantMessage(RestaurantMessageEntity restaurantMessageEntity) {
+        try {
+            restaurantMessageRepository.saveAndFlush(restaurantMessageEntity);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }

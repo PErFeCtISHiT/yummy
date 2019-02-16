@@ -52,12 +52,12 @@
                     onclick=window.location.href='/restaurant/info.jsp'>餐厅信息
             </button>
         </div>
-        <div class=am-topbar-right">
+        <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
                     onclick=window.location.href='/restaurant/addProduct.jsp'>添加单品
             </button>
         </div>
-        <div class=am-topbar-right">
+        <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
                     onclick=window.location.href='/restaurant/addOrder.jsp'>添加套餐
             </button>

@@ -32,4 +32,6 @@ public interface RestaurantService extends PublicService{
     boolean addProducts(String pidList);
 
     String modifyPidList(String pidList);
+
+    boolean saveRestaurantMessage(RestaurantMessageEntity restaurantMessageEntity);
 }

@@ -21,4 +21,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity,Integer> {
     List<OrderEntity> findByRestaurant(UserEntity userEntity);
 
     List<OrderEntity> findByMemberAndStatus(UserEntity userEntity,String status);
+
+    List<OrderEntity> findByMember(UserEntity userEntity);
 }

@@ -15,6 +15,7 @@ public class RestaurantMessageEntity {
     private Integer id;
     private String restaurantType = "美食";//美食、饮品、甜品
     private String restaurantName = "";
+    private Double balance = 0.0;
     private AddressEntity addressEntity;
     private UserEntity restaurantEntity;
     @Id
@@ -66,5 +67,15 @@ public class RestaurantMessageEntity {
 
     public void setRestaurantEntity(UserEntity restaurantEntity) {
         this.restaurantEntity = restaurantEntity;
+    }
+
+    @Basic
+    @Column(name = "restaurant_balance",nullable = false)
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 }

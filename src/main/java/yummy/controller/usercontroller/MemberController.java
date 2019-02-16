@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import yummy.entity.*;
 import yummy.service.*;
-import yummy.util.*;
+import yummy.util.AddressHelper;
+import yummy.util.JsonHelper;
+import yummy.util.NamedContext;
+import yummy.util.PasswordHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,15 +49,17 @@ public class MemberController {
     private final UserService userService;
     private final RestaurantService restaurantService;
     private final OrderService orderService;
+    private final ManagerService managerService;
 
     @Autowired
-    public MemberController(MemberService memberService, JavaMailSender mailSender, AddressService addressService, UserService userService, RestaurantService restaurantService, OrderService orderService) {
+    public MemberController(MemberService memberService, JavaMailSender mailSender, AddressService addressService, UserService userService, RestaurantService restaurantService, OrderService orderService, ManagerService managerService) {
         this.memberService = memberService;
         this.mailSender = mailSender;
         this.addressService = addressService;
         this.userService = userService;
         this.restaurantService = restaurantService;
         this.orderService = orderService;
+        this.managerService = managerService;
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
@@ -167,6 +172,7 @@ public class MemberController {
         ret.put(NamedContext.MES, NamedContext.SUCCESS);
         JsonHelper.jsonToResponse(response, ret);
     }
+
     @RequiresRoles("member")
     @RequestMapping(value = "/mainAddress", method = RequestMethod.GET)
     public void mainAddress(@RequestParam String addressName, HttpServletResponse response) {
@@ -178,11 +184,12 @@ public class MemberController {
         if (!memberService.saveMemberMessage(userEntity.getMemberMessageEntity())) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
-            ret.put(NamedContext.ADDRESSID,addressEntity.getId());
+            ret.put(NamedContext.ADDRESSID, addressEntity.getId());
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
         }
         JsonHelper.jsonToResponse(response, ret);
     }
+
     @RequiresRoles("member")
     @RequestMapping(value = "/destroyUser", method = RequestMethod.GET)
     public void destroyUser(HttpServletResponse response) {
@@ -218,8 +225,8 @@ public class MemberController {
             productEntity.setRestaurant(restaurant);
         List<OrderEntity> orderEntities = restaurantService.findOrders(restaurant);
         List<OrderEntity> orderEntityList = new ArrayList<>();
-        for(OrderEntity orderEntity : orderEntities){
-            if(orderEntity.getStatus().equals(NamedContext.UNORDERED) && orderEntity.getEndDate().after(date)){
+        for (OrderEntity orderEntity : orderEntities) {
+            if (orderEntity.getStatus().equals(NamedContext.UNORDERED) && orderEntity.getEndDate().after(date)) {
                 orderEntityList.add(orderEntity);
             }
         }
@@ -239,12 +246,11 @@ public class MemberController {
         JSONObject para = JsonHelper.requestToJson(request);
         OrderEntity orderEntity = new OrderEntity();
         Time time = new Time(new java.util.Date().getTime());
-        time.setMinutes(time.getMinutes() + 30);
         orderEntity.setOrderTime(time);
         orderEntity.setPrice(para.getDouble(NamedContext.PRICE));
         orderEntity.setPidList(restaurantService.modifyPidList(para.getString(NamedContext.PIDLIST)));
         JSONObject ret = new JSONObject();
-        if(!restaurantService.removeProducts(orderEntity.getPidList())){
+        if (!restaurantService.removeProducts(orderEntity.getPidList())) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
@@ -256,7 +262,7 @@ public class MemberController {
         UserEntity userEntity = userService.findByLoginToken(loginToken);
         orderEntity.setMember(userEntity);
         orderEntity.setStatus(NamedContext.UNPAYED);
-        Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(),restaurant.getRestaurantMessageEntity().getAddressEntity());
+        Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(), restaurant.getRestaurantMessageEntity().getAddressEntity());
 
         addOrder(request, orderEntity, userEntity, ret, sentMinute);
         JsonHelper.jsonToResponse(response, ret);
@@ -271,7 +277,7 @@ public class MemberController {
         MemberMessageEntity memberMessageEntity = userEntity.getMemberMessageEntity();
         Double pay = orderEntity.getPrice() * (1 - orderEntity.getDiscount());
         JSONObject ret = new JSONObject();
-        if(memberMessageEntity.getBalance() < pay){
+        if (memberMessageEntity.getBalance() < pay) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
@@ -279,19 +285,19 @@ public class MemberController {
         memberMessageEntity.setBalance(memberMessageEntity.getBalance() - pay);
         memberMessageEntity.setConsume(memberMessageEntity.getConsume() + pay);
         orderEntity.setStatus(NamedContext.PAYED);
-        if(!memberService.saveMemberMessage(memberMessageEntity) || !orderService.modify(orderEntity)){
+        if (!managerService.makeAccount(pay) || !memberService.saveMemberMessage(memberMessageEntity) || !orderService.modify(orderEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
-        }
-        else
-            ret.put(NamedContext.MES,NamedContext.SUCCESS);
+        } else
+            ret.put(NamedContext.MES, NamedContext.SUCCESS);
         JsonHelper.jsonToResponse(response, ret);
     }
+
     @RequiresRoles("member")
     @RequestMapping(value = "/payFailed", method = RequestMethod.GET)
     public void payFailed(@RequestParam Integer orderId, HttpServletResponse response) {
         OrderEntity orderEntity = (OrderEntity) orderService.findByID(orderId);
         JSONObject ret = new JSONObject();
-        if(!restaurantService.addProducts(orderEntity.getPidList())){
+        if (!restaurantService.addProducts(orderEntity.getPidList())) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
@@ -303,6 +309,7 @@ public class MemberController {
         }
         JsonHelper.jsonToResponse(response, ret);
     }
+
     @RequiresRoles("member")
     @RequestMapping(value = "/addRestaurantOrder", method = RequestMethod.GET)
     public void addRestaurantOrder(@RequestParam Integer orderId, HttpServletRequest request, HttpServletResponse response) {
@@ -317,17 +324,16 @@ public class MemberController {
         order.setPrice(orderEntity.getPrice());
         order.setDiscount(orderEntity.getDiscount());
         Time time = new Time(new java.util.Date().getTime());
-        time.setMinutes(time.getMinutes() + 30);
         orderEntity.setOrderTime(time);
         order.setOrderName(orderEntity.getOrderName());
         JSONObject ret = new JSONObject();
-        if(!restaurantService.removeProducts(orderEntity.getPidList())){
+        if (!restaurantService.removeProducts(orderEntity.getPidList())) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
         }
 
-        Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(),order.getRestaurant().getRestaurantMessageEntity().getAddressEntity());
+        Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(), order.getRestaurant().getRestaurantMessageEntity().getAddressEntity());
 
         addOrder(request, order, userEntity, ret, sentMinute);
         JsonHelper.jsonToResponse(response, ret);
@@ -336,31 +342,98 @@ public class MemberController {
     private void addOrder(HttpServletRequest request, OrderEntity order, UserEntity userEntity, JSONObject ret, Double sentMinute) {
         if (sentMinute >= 30 || !orderService.add(order)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
-        }else {
+        } else {
             HttpSession session = request.getSession(true);
-            session.setAttribute(NamedContext.ORDERID,order.getId());
-            session.setAttribute(NamedContext.SENTMINUTE,JsonHelper.scale(sentMinute));
-            session.setAttribute(NamedContext.MAIL,userEntity.getLoginToken());
-            session.setAttribute(NamedContext.BALANCE,JsonHelper.scale(userEntity.getMemberMessageEntity().getBalance()));
-            session.setAttribute(NamedContext.PAY,JsonHelper.scale(order.getPrice()));
+            session.setAttribute(NamedContext.ORDERID, order.getId());
+            session.setAttribute(NamedContext.SENTMINUTE, JsonHelper.scale(sentMinute));
+            session.setAttribute(NamedContext.MAIL, userEntity.getLoginToken());
+            session.setAttribute(NamedContext.BALANCE, JsonHelper.scale(userEntity.getMemberMessageEntity().getBalance()));
+            session.setAttribute(NamedContext.PAY, JsonHelper.scale(order.getPrice()));
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
         }
     }
 
     @RequiresRoles("member")
     @RequestMapping(value = "/getUndeliveredOrder", method = RequestMethod.GET)
-    public void getUndeliveredOrder(HttpServletRequest request,HttpServletResponse response) {
+    public void getUndeliveredOrder(HttpServletRequest request, HttpServletResponse response) {
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
-        List<OrderEntity> orderEntities = orderService.findByMemberAndStatus(userEntity,NamedContext.PAYED);
-        for(OrderEntity orderEntity : orderEntities){
+        List<OrderEntity> orderEntities = orderService.findByMemberAndStatus(userEntity, NamedContext.PAYED);
+        for (OrderEntity orderEntity : orderEntities) {
             orderEntity.setRestaurant(null);
             orderEntity.setMember(null);
         }
         JSONArray orderArray = new JSONArray(orderEntities);
         JSONObject ret = new JSONObject();
         ret.put(NamedContext.MES, NamedContext.SUCCESS);
-        request.getSession(true).setAttribute(NamedContext.ORDERS,orderArray);
+        request.getSession(true).setAttribute(NamedContext.ORDERS, orderArray);
+        JsonHelper.jsonToResponse(response, ret);
+    }
+
+    @RequiresRoles("member")
+    @RequestMapping(value = "/cancelOrder", method = RequestMethod.GET)
+    public void cancelOrder(@RequestParam Integer orderId, HttpServletResponse response) {
+        OrderEntity orderEntity = (OrderEntity) orderService.findByID(orderId);
+        JSONObject ret = new JSONObject();
+        orderEntity.setStatus(NamedContext.CANCELED);
+        Double cancelPrice = orderService.calculateCancelPrice(orderEntity);
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        MemberMessageEntity memberMessageEntity = userEntity.getMemberMessageEntity();
+        memberMessageEntity.setBalance(memberMessageEntity.getBalance() + cancelPrice);
+        if (!restaurantService.addProducts(orderEntity.getPidList()) || !memberService.saveMemberMessage(memberMessageEntity)) {
+            ret.put(NamedContext.MES, NamedContext.FAILED);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
+        if (!orderService.modify(orderEntity)) {
+            ret.put(NamedContext.MES, NamedContext.FAILED);
+        } else {
+            ret.put(NamedContext.CANCELPRICE,cancelPrice);
+            ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        }
+        JsonHelper.jsonToResponse(response, ret);
+    }
+
+    @RequiresRoles("member")
+    @RequestMapping(value = "/acceptOrder", method = RequestMethod.GET)
+    public void acceptOrder(@RequestParam Integer orderId, HttpServletResponse response) {
+        OrderEntity orderEntity = (OrderEntity) orderService.findByID(orderId);
+        JSONObject ret = new JSONObject();
+        orderEntity.setStatus(NamedContext.DELIVERED);
+        double pay = (orderEntity.getPrice() * (1 - orderEntity.getDiscount())) * 0.95;
+        UserEntity restaurant = orderEntity.getRestaurant();
+        RestaurantMessageEntity restaurantMessageEntity = restaurant.getRestaurantMessageEntity();
+        restaurantMessageEntity.setBalance(restaurantMessageEntity.getBalance() + pay);
+        if (!managerService.makeAccount(-pay) || !orderService.modify(orderEntity) || !restaurantService.saveRestaurantMessage(restaurantMessageEntity)) {
+            ret.put(NamedContext.MES, NamedContext.FAILED);
+        } else {
+            ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        }
+        JsonHelper.jsonToResponse(response, ret);
+    }
+
+    @RequiresRoles("member")
+    @RequestMapping(value = "/getStat", method = RequestMethod.POST)
+    public void getStat(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        JSONObject object = JsonHelper.requestToJson(request);
+        String status = object.getString(NamedContext.STATUS);
+        String orderDate = object.getString(NamedContext.ORDERDATE);
+        String price = object.getString(NamedContext.PRICE);
+        String restaurantType = object.getString(NamedContext.RESTAURANTTYPE);
+        List<OrderEntity> orderEntities = orderService.findByMember(userEntity);
+        orderEntities = orderService.filterByStatusAndDateAndPrice(orderEntities,status,orderDate,price);
+        orderEntities = orderService.filterByRestaurantType(orderEntities,restaurantType);
+        for (OrderEntity orderEntity : orderEntities) {
+            orderEntity.setRestaurant(null);
+            orderEntity.setMember(null);
+        }
+        JSONArray orderArray = new JSONArray(orderEntities);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        request.getSession(true).setAttribute(NamedContext.ORDERS, orderArray);
         JsonHelper.jsonToResponse(response, ret);
     }
 }

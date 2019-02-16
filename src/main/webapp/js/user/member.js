@@ -394,7 +394,6 @@ function getUndeliveredOrder() {
     )
 }
 function loadOrders() {
-    console.log(unDeliveredOrders)
     document.getElementById("order").innerHTML = "";
     for (var i = 0; i < unDeliveredOrders.length; i++) {
         document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default\">\n" +
@@ -414,9 +413,111 @@ function loadOrders() {
             "    </thead>\n" + "    <tbody id="+("body"+unDeliveredOrders[i].id.toString()).toString()+">";
         document.getElementById("order").innerHTML += "    </tbody>\n" +
             "</table>";
-        document.getElementById("order").innerHTML += "<button type=\"button\" class=\"am-btn am-btn-default\" onclick=addRestaurantOrder("+unDeliveredOrders[i].id+")>订购</button>";
+        document.getElementById("order").innerHTML += "<button type=\"button\" class=\"am-btn am-btn-default\" onclick=cancelOrder("+unDeliveredOrders[i].id+")>退订</button>";
+        document.getElementById("order").innerHTML += "<button type=\"button\" class=\"am-btn am-btn-default\" onclick=acceptOrder("+unDeliveredOrders[i].id+")>确认收货</button>";
         for(var j = 0;j < orderProducts.length;j++){
             document.getElementById(("body"+unDeliveredOrders[i].id.toString().toString())).innerHTML += "<tr>\n" +
+                "            <td>"+orderProducts[j].productName+"</td>\n" +
+                "            <td>"+orderProducts[j].num+"</td>\n" +
+                "        </tr>"
+        }
+    }
+}
+
+function acceptOrder(orderId) {
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/member/acceptOrder?orderId=' + orderId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.message === 'failed') {
+                    alert('接受失败');
+                    window.location.href = '/member/mainPage.jsp'
+                } else if (data.message === 'unauthorized') {
+                    window.location.href = '/error.jsp'
+                }
+                else {
+                    alert('收货完成');
+                    window.location.href = '/member/mainPage.jsp'
+                }
+            }
+        }
+    )
+}
+
+function cancelOrder(orderId) {
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/member/cancelOrder?orderId=' + orderId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.message === 'failed') {
+                    alert('取消失败');
+                    window.location.href = '/member/mainPage.jsp'
+                } else if (data.message === 'unauthorized') {
+                    window.location.href = '/error.jsp'
+                }
+                else {
+                    alert('订单被取消,收到退款 '+data.cancelPrice+' 元');
+                    window.location.href = '/member/mainPage.jsp'
+                }
+            }
+        }
+    )
+}
+function showStatMain(status,orderDate,price,restaurantType) {
+    var para = {status:status,orderDate:orderDate,price:price,restaurantType:restaurantType};
+    console.log(para);
+    $.ajax(
+        {
+            type: 'POST',
+            url: '/member/getStat',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(para),
+            dataType: "json",
+            success: function (data) {
+                if (data.message === 'failed') {
+                    alert('信息获取失败');
+                    window.location.href = '/member/mainPage.jsp'
+                } else if (data.message === 'unauthorized') {
+                    window.location.href = '/error.jsp'
+                }
+                else {
+                    window.location.href = '/member/statMain.jsp?status='+status+'&orderDate='+orderDate+'&price='+price+'&restaurantType='+restaurantType
+                }
+            }
+        }
+    )
+}
+var orderStat;
+function loadStat() {
+    document.getElementById("order").innerHTML = "";
+    for (var i = 0; i < orderStat.length; i++) {
+        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default\">\n" +
+            "    <header class=\"am-panel-hd\">\n" +
+            "        <h3 class=\"am-panel-title\">" + orderStat[i].orderName + "</h3>\n" +
+            "<h3>订购日期:"+orderStat[i].endDate+"</h3>"+
+            "<h3>套餐金额:"+orderStat[i].price+" 元</h3>"+
+            "    </header>\n" +
+            "    <div class=\"am-panel-bd\" id="+orderStat[i].id+">\n";
+        document.getElementById("order").innerHTML +=    "    </div>\n" +
+            "</section>"
+        var orderProducts = JSON.parse(orderStat[i].pidList);
+        document.getElementById(orderStat[i].id).innerHTML += "<table class=\"am-table\">\n" +
+            "    <thead>\n" +
+            "        <tr>\n" +
+            "            <th>单品名称</th>\n" +
+            "            <th>单品数量</th>\n" +
+            "        </tr>\n" +
+            "    </thead>\n" + "    <tbody id="+("body"+orderStat[i].id.toString()).toString()+">";
+        document.getElementById("order").innerHTML += "    </tbody>\n" +
+            "</table>";
+        for(var j = 0;j < orderProducts.length;j++){
+            document.getElementById(("body"+orderStat[i].id.toString().toString())).innerHTML += "<tr>\n" +
                 "            <td>"+orderProducts[j].productName+"</td>\n" +
                 "            <td>"+orderProducts[j].num+"</td>\n" +
                 "        </tr>"

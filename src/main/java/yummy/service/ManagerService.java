@@ -6,4 +6,5 @@ package yummy.service;
  * @date: create in 14:29 2019/1/18
  */
 public interface ManagerService extends PublicService{
+    boolean makeAccount(Double pay);
 }

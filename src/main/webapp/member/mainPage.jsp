@@ -72,6 +72,11 @@
                     onclick=getUndeliveredOrder()>未送达订单
             </button>
         </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+                    onclick=showStatMain('all','all','all','all')>查看消费信息
+            </button>
+        </div>
     </div>
 </header>
 </body>

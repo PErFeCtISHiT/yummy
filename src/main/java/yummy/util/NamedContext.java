@@ -46,4 +46,11 @@ public class NamedContext {
     public static final String ADDRESSID = "addressId";
     public static final String SENTMINUTE = "sentMinute";
     public static final String PRODUCTNAME = "productName";
+    public static final String CANCELED = "canceled";
+    public static final String DELIVERED = "delivered";
+    public static final String CANCELPRICE = "cancelPrice";
+    public static final String STATUS = "status";
+    public static final String ALL = "all";
+    public static final String ORDERDATE = "orderDate";
+    public static final String RESTAURANTTYPE = "restaurantType";
 }

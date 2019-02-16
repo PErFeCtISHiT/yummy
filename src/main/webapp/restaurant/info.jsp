@@ -1,10 +1,11 @@
 <%@ page import="yummy.entity.UserEntity" %>
-<%@ page import="yummy.util.NamedContext" %>
 <%@ page import="org.json.JSONObject" %>
+<%@ page import="yummy.util.NamedContext" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     UserEntity user = (UserEntity) session.getAttribute(NamedContext.USER);
     request.getServletContext().setAttribute(NamedContext.ERROR, NamedContext.UNLOGIN);
+
     if (user == null)
         request.getRequestDispatcher("/error.jsp").forward(request, response);
     assert user != null;
