@@ -53,4 +53,5 @@ public class NamedContext {
     public static final String ALL = "all";
     public static final String ORDERDATE = "orderDate";
     public static final String RESTAURANTTYPE = "restaurantType";
+    public static final String MEMBERLEVEL = "memberLevel";
 }

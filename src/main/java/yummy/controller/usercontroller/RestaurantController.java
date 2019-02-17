@@ -18,8 +18,11 @@ import yummy.util.JsonHelper;
 import yummy.util.NamedContext;
 import yummy.util.PasswordHelper;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: pis
@@ -101,6 +104,48 @@ public class RestaurantController {
         } else {
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
         }
+        JsonHelper.jsonToResponse(response, ret);
+    }
+
+    @RequiresRoles("restaurant")
+    @RequestMapping(value = "/getDeliveredOrder", method = RequestMethod.GET)
+    public void getDeliveredOrder(HttpServletRequest request, HttpServletResponse response) {
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        List<OrderEntity> orderEntities = orderService.findByRestaurantAndStatus(userEntity, NamedContext.DELIVERED);
+        for (OrderEntity orderEntity : orderEntities) {
+            orderEntity.setRestaurant(null);
+            orderEntity.setMember(null);
+        }
+        JSONArray orderArray = new JSONArray(orderEntities);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        request.getSession(true).setAttribute(NamedContext.ORDERS, orderArray);
+        JsonHelper.jsonToResponse(response, ret);
+    }
+
+    @RequiresRoles("restaurant")
+    @RequestMapping(value = "/getStat", method = RequestMethod.POST)
+    public void getStat(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        JSONObject object = JsonHelper.requestToJson(request);
+        String status = object.getString(NamedContext.STATUS);
+        String orderDate = object.getString(NamedContext.ORDERDATE);
+        String price = object.getString(NamedContext.PRICE);
+        String memberLevel = object.getString(NamedContext.MEMBERLEVEL);
+        System.out.println(object.toString());
+        List<OrderEntity> orderEntities = orderService.findUserOrderByRestaurant(userEntity);
+        orderEntities = orderService.filterByStatusAndDateAndPrice(orderEntities,status,orderDate,price);
+        orderEntities = orderService.filterByMemberLevel(orderEntities,memberLevel);
+        for (OrderEntity orderEntity : orderEntities) {
+            orderEntity.setRestaurant(null);
+            orderEntity.setMember(null);
+        }
+        JSONArray orderArray = new JSONArray(orderEntities);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        request.getSession(true).setAttribute(NamedContext.ORDERS, orderArray);
         JsonHelper.jsonToResponse(response, ret);
     }
 }

@@ -74,7 +74,7 @@
         </div>
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
-                    onclick=showStatMain('all','all','all','all')>查看消费信息
+                    onclick=showStatMain('all','all','all','all')>查看统计信息
             </button>
         </div>
     </div>

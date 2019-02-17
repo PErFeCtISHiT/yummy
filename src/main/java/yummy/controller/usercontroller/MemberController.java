@@ -275,6 +275,7 @@ public class MemberController {
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
         MemberMessageEntity memberMessageEntity = userEntity.getMemberMessageEntity();
+        orderEntity.setDiscount(orderEntity.getDiscount() + memberMessageEntity.getLevel() / 100);
         Double pay = orderEntity.getPrice() * (1 - orderEntity.getDiscount());
         JSONObject ret = new JSONObject();
         if (memberMessageEntity.getBalance() < pay) {
@@ -284,6 +285,7 @@ public class MemberController {
         }
         memberMessageEntity.setBalance(memberMessageEntity.getBalance() - pay);
         memberMessageEntity.setConsume(memberMessageEntity.getConsume() + pay);
+        memberMessageEntity.setLevel((int) (Math.log(memberMessageEntity.getConsume()) / Math.log(10)));
         orderEntity.setStatus(NamedContext.PAYED);
         if (!managerService.makeAccount(pay) || !memberService.saveMemberMessage(memberMessageEntity) || !orderService.modify(orderEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);

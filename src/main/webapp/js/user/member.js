@@ -396,9 +396,11 @@ function getUndeliveredOrder() {
 function loadOrders() {
     document.getElementById("order").innerHTML = "";
     for (var i = 0; i < unDeliveredOrders.length; i++) {
-        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default\">\n" +
+        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
-            "        <h3 class=\"am-panel-title\">" + unDeliveredOrders[i].orderName + "</h3>\n" +
+            "        <h3 class=\"am-panel-title\">套餐名称:" + unDeliveredOrders[i].orderName + "</h3>\n" +
+            "<h3 class=\"am-panel-title\">订购日期:"+unDeliveredOrders[i].endDate+"</h3>"+
+            "<h3 class=\"am-panel-title\">套餐金额:"+unDeliveredOrders[i].price+" 元</h3>"+
             "    </header>\n" +
             "    <div class=\"am-panel-bd\" id="+unDeliveredOrders[i].id+">\n";
         document.getElementById("order").innerHTML +=    "    </div>\n" +
@@ -471,7 +473,6 @@ function cancelOrder(orderId) {
 }
 function showStatMain(status,orderDate,price,restaurantType) {
     var para = {status:status,orderDate:orderDate,price:price,restaurantType:restaurantType};
-    console.log(para);
     $.ajax(
         {
             type: 'POST',
@@ -497,11 +498,11 @@ var orderStat;
 function loadStat() {
     document.getElementById("order").innerHTML = "";
     for (var i = 0; i < orderStat.length; i++) {
-        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default\">\n" +
+        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
-            "        <h3 class=\"am-panel-title\">" + orderStat[i].orderName + "</h3>\n" +
-            "<h3>订购日期:"+orderStat[i].endDate+"</h3>"+
-            "<h3>套餐金额:"+orderStat[i].price+" 元</h3>"+
+            "        <h3 class=\"am-panel-title\">套餐名称:" + orderStat[i].orderName + "</h3>\n" +
+            "<h3 class=\"am-panel-title\">订购日期:"+orderStat[i].endDate+"</h3>"+
+            "<h3 class=\"am-panel-title\">套餐金额:"+orderStat[i].price+" 元</h3>"+
             "    </header>\n" +
             "    <div class=\"am-panel-bd\" id="+orderStat[i].id+">\n";
         document.getElementById("order").innerHTML +=    "    </div>\n" +

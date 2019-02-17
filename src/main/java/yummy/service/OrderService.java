@@ -22,4 +22,12 @@ public interface OrderService extends PublicService{
     List<OrderEntity> findByMember(UserEntity userEntity);
 
     List<OrderEntity> filterByRestaurantType(List<OrderEntity> orderEntities,String restaurantType);
+
+    List<OrderEntity> findByRestaurantAndStatus(UserEntity userEntity, String delivered);
+
+    List<OrderEntity> findByRestaurant(UserEntity userEntity);
+
+    List<OrderEntity> filterByMemberLevel(List<OrderEntity> orderEntities, String memberLevel);
+
+    List<OrderEntity> findUserOrderByRestaurant(UserEntity userEntity);
 }

@@ -8,13 +8,13 @@
             showOrderType = "所有订单";
             break;
         case NamedContext.PAYED:
-            showOrderType = "待送达";
+            showOrderType = "点餐";
             break;
         case NamedContext.CANCELED:
-            showOrderType = "已退订";
+            showOrderType = "退订";
             break;
         case NamedContext.DELIVERED:
-            showOrderType = "已送达";
+            showOrderType = "已入账";
             break;
         default:
             showOrderType = "error";
@@ -38,17 +38,17 @@
             case 40:
                 showPrice = "20-40";
                 break;
-                default:
-                    showPrice = "40+";
-                    break;
+            default:
+                showPrice = "40+";
+                break;
         }
     }
-    String restaurantType = request.getParameter(NamedContext.RESTAURANTTYPE);
-    String showRestaurantType;
-    if(restaurantType.equals(NamedContext.ALL))
-        showRestaurantType = "所有类型";
+    String memberLevel = request.getParameter(NamedContext.MEMBERLEVEL);
+    String showMemberLevel;
+    if(memberLevel.equals(NamedContext.ALL))
+        showMemberLevel = "所有等级";
     else
-        showRestaurantType = restaurantType;
+        showMemberLevel = memberLevel;
 %>
 <html>
 <head>
@@ -85,7 +85,7 @@
     <link rel="stylesheet" href="../assets/css/app.css">
     <title>统计信息</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/member.js"></script>
+    <script src="../js/user/restaurant.js"></script>
     <script src="../js/global.js"></script>
     <script src="../assets/js/amazeui.min.js"></script>
 </head>
@@ -107,10 +107,10 @@
                 <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="dropButton"></button>
                 <ul class="am-dropdown-content">
                     <li class="am-dropdown-header">订单类型</li>
-                    <li><a onclick=showStatMain('all',orderDate,orderDate,restaurantType)>所有订单</a></li>
-                    <li><a onclick=showStatMain('payed',orderDate,orderDate,restaurantType)>待送达</a></li>
-                    <li><a onclick=showStatMain('canceled',orderDate,orderDate,restaurantType)>已退订</a></li>
-                    <li><a onclick=showStatMain('delivered',orderDate,orderDate,restaurantType)>已送达</a></li>
+                    <li><a onclick=showStatMain('all',orderDate,orderDate,memberLevel)>所有订单</a></li>
+                    <li><a onclick=showStatMain('payed',orderDate,orderDate,memberLevel)>点餐</a></li>
+                    <li><a onclick=showStatMain('canceled',orderDate,orderDate,memberLevel)>退订</a></li>
+                    <li><a onclick=showStatMain('delivered',orderDate,orderDate,memberLevel)>已入账</a></li>
                 </ul>
             </div>
         </div>
@@ -119,7 +119,7 @@
                 <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>订购日期 <span class="am-icon-caret-down"></span></button>
                 <ul class="am-dropdown-content">
                     <li><a onclick=showStatMain(orderType,'all',orderPrice,restaurantType)>所有日期</a></li>
-                    <input type="date" id="date" onchange=showStatMain(orderType,value,orderPrice,restaurantType)>
+                    <input type="date" id="date" onchange=showStatMain(orderType,value,orderPrice,memberLevel)>
                 </ul>
             </div>
         </div>
@@ -128,10 +128,10 @@
                 <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="priceDropButton"></button>
                 <ul class="am-dropdown-content">
                     <li class="am-dropdown-header">订单金额/元</li>
-                    <li><a onclick=showStatMain(orderType,orderDate,'all',restaurantType)>所有金额</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,'20',restaurantType)>0-20</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,'40',restaurantType)>20-40</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,'1000',restaurantType)>40+</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,'all',memberLevel)>所有金额</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,'20',memberLevel)>0-20</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,'40',memberLevel)>20-40</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,'1000',memberLevel)>40+</a></li>
                 </ul>
             </div>
         </div>
@@ -139,11 +139,14 @@
             <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
                 <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="typeDropButton"></button>
                 <ul class="am-dropdown-content">
-                    <li class="am-dropdown-header">餐厅类型</li>
-                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'all')>所有类型</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'美食')>美食</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'饮品')>饮品</a></li>
-                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'甜品')>甜品</a></li>
+                    <li class="am-dropdown-header">会员等级</li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'all')>所有级别</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'1')>1</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'2')>2</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'3')>3</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'4')>4</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'5')>5</a></li>
+                    <li><a onclick=showStatMain(orderType,orderDate,orderPrice,'6')>6</a></li>
                 </ul>
             </div>
         </div>
@@ -166,12 +169,12 @@
     var orderType = '<%=orderType%>';
     var orderDate = '<%=orderDate%>';
     var orderPrice = '<%=price%>';
-    var restaurantType = '<%=restaurantType%>';
+    var memberLevel = '<%=memberLevel%>';
     document.getElementById("dropButton").innerHTML = "<%=showOrderType%>" + " <span class=\"am-icon-caret-down\"></span>";
     document.getElementById("priceDropButton").innerHTML = "<%=showPrice%>" + " <span class=\"am-icon-caret-down\"></span>";
-    document.getElementById("typeDropButton").innerHTML = "<%=showRestaurantType%>" + " <span class=\"am-icon-caret-down\"></span>";
+    document.getElementById("typeDropButton").innerHTML = "<%=showMemberLevel%>" + " <span class=\"am-icon-caret-down\"></span>";
     orderStat = <%=session.getAttribute(NamedContext.ORDERS)%>
-    loadStat();
+        loadStat();
 </script>
 </body>
 </html>

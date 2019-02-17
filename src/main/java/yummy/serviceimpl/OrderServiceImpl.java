@@ -112,4 +112,39 @@ public class OrderServiceImpl extends PublicServiceImpl implements OrderService 
             return ret;
         }
     }
+
+    @Override
+    public List<OrderEntity> findByRestaurantAndStatus(UserEntity userEntity, String delivered) {
+        return orderRepository.findByRestaurantAndStatus(userEntity,delivered);
+    }
+
+    @Override
+    public List<OrderEntity> findByRestaurant(UserEntity userEntity) {
+        return orderRepository.findByRestaurant(userEntity);
+    }
+
+    @Override
+    public List<OrderEntity> filterByMemberLevel(List<OrderEntity> orderEntities, String memberLevel) {
+        if(memberLevel.equals(NamedContext.ALL))
+            return orderEntities;
+        else {
+            List<OrderEntity> ret = new ArrayList<>();
+            for(OrderEntity orderEntity : orderEntities){
+                if(orderEntity.getMember().getMemberMessageEntity().getLevel().equals(Integer.valueOf(memberLevel)))
+                    ret.add(orderEntity);
+            }
+            return ret;
+        }
+    }
+
+    @Override
+    public List<OrderEntity> findUserOrderByRestaurant(UserEntity userEntity) {
+        List<OrderEntity> orderEntities = orderRepository.findByRestaurant(userEntity);
+        List<OrderEntity> ret = new ArrayList<>();
+        for(OrderEntity orderEntity : orderEntities){
+            if(!orderEntity.getStatus().equals(NamedContext.UNORDERED))
+                ret.add(orderEntity);
+        }
+        return ret;
+    }
 }
