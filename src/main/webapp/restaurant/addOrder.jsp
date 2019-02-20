@@ -37,10 +37,9 @@
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/restaurant.js"></script>
     <script src="../js/global.js"></script>
-    <link rel="stylesheet" type="text/css" href="../js/default.css">
 </head>
 <body>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
@@ -86,7 +85,7 @@
         </div>
         <div class="am-btn-group">
             <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
-            <button type="button" class="am-btn am-btn-default" onclick=addOrder()>添加</button>
+            <button type="button" class="am-btn am-btn-default" onclick=addOrder()>添加套餐</button>
         </div>
     </fieldset>
 </form>

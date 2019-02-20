@@ -90,7 +90,7 @@
     <script src="../assets/js/amazeui.min.js"></script>
 </head>
 <body>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>

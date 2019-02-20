@@ -1,6 +1,7 @@
 package yummy.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import yummy.util.JsonHelper;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class MemberMessageEntity {
     @Basic
     @Column(name = "consume", nullable = false,columnDefinition = "decimal(10,2) default '0.0'")
     public Double getConsume() {
-        return consume;
+        return JsonHelper.scale(consume);
     }
 
     public void setConsume(Double consume) {
@@ -85,7 +86,7 @@ public class MemberMessageEntity {
     @Basic
     @Column(name = "balance", nullable = false)
     public Double getBalance() {
-        return balance;
+        return JsonHelper.scale(balance);
     }
 
     public void setBalance(Double balance) {

@@ -17,6 +17,34 @@ function closeWindow() {
     }
 
 }
+function login() {
+    var loginToken = document.getElementById("loginTokenInput").value;
+    var password = document.getElementById("passwordInput").value;
+    var token = {"loginToken": loginToken, "userPassword": password};
+    $.ajax(
+        {
+            type: 'POST',
+            url: '/user/login',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(token),
+            dataType: "json",
+            success: function (data) {
+                if (data.message === 'failed') {
+                    window.location.href = '/error.jsp'
+                } else {
+                    if (data.userType === 'member')
+                        window.location.href = '/member/mainPage.jsp';
+                    else if (data.userType === 'restaurant')
+                        window.location.href = '/restaurant/mainPage.jsp';
+                    else if (data.userType === 'manager')
+                        window.location.href = '/manager/mainPage.jsp';
+                    else
+                        window.location.href = '/error.jsp';
+                }
+            }
+        }
+    )
+}
 function logout() {
     $.ajax(
         {

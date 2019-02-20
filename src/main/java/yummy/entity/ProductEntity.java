@@ -1,6 +1,7 @@
 package yummy.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import yummy.util.JsonHelper;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -54,7 +55,7 @@ public class ProductEntity {
     @Basic
     @Column(name = "product_price", nullable = false)
     public Double getPrice() {
-        return price;
+        return JsonHelper.scale(price);
     }
 
     public void setPrice(Double price) {

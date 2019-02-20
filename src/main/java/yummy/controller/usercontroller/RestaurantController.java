@@ -134,7 +134,6 @@ public class RestaurantController {
         String orderDate = object.getString(NamedContext.ORDERDATE);
         String price = object.getString(NamedContext.PRICE);
         String memberLevel = object.getString(NamedContext.MEMBERLEVEL);
-        System.out.println(object.toString());
         List<OrderEntity> orderEntities = orderService.findUserOrderByRestaurant(userEntity);
         orderEntities = orderService.filterByStatusAndDateAndPrice(orderEntities,status,orderDate,price);
         orderEntities = orderService.filterByMemberLevel(orderEntities,memberLevel);

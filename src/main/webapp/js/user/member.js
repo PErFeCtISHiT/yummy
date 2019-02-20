@@ -20,35 +20,6 @@ function memberSignUp() {
     )
 }
 
-function login() {
-    var loginToken = document.getElementById("loginTokenInput").value;
-    var password = document.getElementById("passwordInput").value;
-    var token = {"loginToken": loginToken, "userPassword": password};
-    $.ajax(
-        {
-            type: 'POST',
-            url: '/user/login',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(token),
-            dataType: "json",
-            success: function (data) {
-                if (data.message === 'failed') {
-                    window.location.href = '/error.jsp'
-                } else {
-                    if (data.userType === 'member')
-                        window.location.href = '/member/mainPage.jsp';
-                    else if (data.userType === 'restaurant')
-                        window.location.href = '/restaurant/mainPage.jsp';
-                    else if (data.userType === 'manager')
-                        window.location.href = '/manager/mainPage.jsp';
-                    else
-                        window.location.href = '/error.jsp';
-                }
-            }
-        }
-    )
-}
-
 function addAddress() {
     window.location.href = '/member/mainPage.jsp';
     window.open('/member/map.jsp', 'newwindow', 'top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no')
@@ -143,8 +114,8 @@ function loadRestaurants() {
         document.getElementById("gallery").innerHTML += "<li>\n" +
             "        <div class=\"am-gallery-item\">\n" +
             "            <a onclick=getProducts(" + obj[i].id + ") class=\"\">\n" +
-            "              <img src=\"http://s.amazeui.org/media/i/demos/bing-1.jpg\"/>\n" +
-            "                <h3 class=\"am-gallery-title\">" + obj[i].restaurantName + "</h3>\n" +
+            "              <img src=\"/assets/i/restaurant.jpg\"/>\n" +
+            "                <h1 class=\"am-gallery-title\">" + obj[i].restaurantName + "</h1>\n" +
             "                <div class=\"am-gallery-desc\">" + obj[i].restaurantType + "</div>\n" +
             "            </a>\n" +
             "        </div>\n" +
@@ -176,23 +147,21 @@ function loadAllProducts(obj) {
     var orders = obj.orders;
     document.getElementById("product").innerHTML = "";
     for (var i = 0; i < products.length; i++) {
-        document.getElementById("product").innerHTML += "<dl pid=" + products[i].id + ">\n" +
-            "<p>\n" +
-            "<span class=\"pricedetail\">商品名称:" + products[i].productName + "</span>\n" +
-            "<br>\n" +
-            "<span class=\"pricedetail\">\n价格:<strong>" + products[i].price + "</strong>\n</span>\n" +
-            "<br>\n" +
-            "<span class=\"pricedetail\">剩余:<strong>" + products[i].num + "</strong> 件</span>\n" +
-            "<br>\n" +
-            "</p>\n" +
-            "<dd>\n" +
+        document.getElementById("product").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
+            "    <header class=\"am-panel-hd\">\n" +
+            "        <h3 class=\"am-panel-title\">商品名称:" + products[i].productName + "</h3>\n" +
+            "    </header>\n" +
+            "    <div class=\"am-panel-bd\">\n" +
+            "<span>商品价格:" + products[i].price + "元</span><br>" +
+            "<span>剩余数量:" + products[i].num + "件</span><br>" +
             "<a class=\"am-btn am-btn-default\" onclick=\"pushProduct(" + products[i].id + "," + products[i].price + ")\">添加</a>\n" +
-            "</dd>\n" +
-            "</dl>"
+            "    </div>\n" +
+            "</section>"
     }
+
     document.getElementById("order").innerHTML = "";
     for (var i = 0; i < orders.length; i++) {
-        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default\">\n" +
+        document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
             "        <h3 class=\"am-panel-title\">" + orders[i].orderName + "</h3>\n" +
             "    </header>\n" +
@@ -209,7 +178,7 @@ function loadAllProducts(obj) {
             "    </thead>\n" + "    <tbody id="+("body"+orders[i].id.toString()).toString()+">";
         document.getElementById("order").innerHTML += "    </tbody>\n" +
             "</table>";
-        document.getElementById("order").innerHTML += "<button type=\"button\" class=\"am-btn am-btn-default\" onclick=addRestaurantOrder("+orders[i].id+")>订购</button>";
+        document.getElementById(orders[i].id).innerHTML += "<button type=\"button\" class=\"am-btn am-btn-default\" onclick=addRestaurantOrder("+orders[i].id+")>订购</button>";
         for(var j = 0;j < orderProducts.length;j++){
             document.getElementById(("body"+orders[i].id.toString().toString())).innerHTML += "<tr>\n" +
                 "            <td>"+orderProducts[j].productName+"</td>\n" +
@@ -524,4 +493,15 @@ function loadStat() {
                 "        </tr>"
         }
     }
+}
+
+function showSingle() {
+    document.getElementById("typeButton").innerHTML = "订购单品";
+    document.getElementById("set").hidden=true;
+    document.getElementById("single").hidden=false;
+}
+function showSet() {
+    document.getElementById("typeButton").innerHTML = "订购套餐";
+    document.getElementById("set").hidden=false;
+    document.getElementById("single").hidden=true;
 }

@@ -116,19 +116,16 @@ function loadProducts() {
     document.getElementById("product").innerHTML = "";
     for (var i = 0; i < obj.length; i++) {
         if (obj[i].num > 0) {
-            document.getElementById("product").innerHTML += "<dl pid=" + obj[i].id + ">\n" +
-                "<p>\n" +
-                "<span class=\"pricedetail\">商品名称:" + obj[i].productName + "</span>\n" +
-                "<br>\n" +
-                "<span class=\"pricedetail\">\n价格:<strong>" + obj[i].price + "</strong>\n</span>\n" +
-                "<br>\n" +
-                "<span class=\"pricedetail\">剩余:<strong>" + obj[i].num + "</strong> 件</span>\n" +
-                "<br>\n" +
-                "</p>\n" +
-                "<dd>\n" +
-                "<a class=\"am-btn am-btn-default\" onclick=\"pushProduct(" + obj[i].id + "," + obj[i].price + ")\">添加至套餐</a>\n" +
-                "</dd>\n" +
-                "</dl>"
+            document.getElementById("product").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
+                "    <header class=\"am-panel-hd\">\n" +
+                "        <h3 class=\"am-panel-title\">商品名称:" + obj[i].productName + "</h3>\n" +
+                "    </header>\n" +
+                "    <div class=\"am-panel-bd\">\n" +
+                "<span>商品价格:" + obj[i].price + "元</span><br>" +
+                "<span>剩余数量:" + obj[i].num + "件</span><br>" +
+                "<a class=\"am-btn am-btn-default\" onclick=\"pushProduct(" + obj[i].id + "," + obj[i].price + ")\">添加</a>\n" +
+                "    </div>\n" +
+                "</section>"
         }
     }
 }

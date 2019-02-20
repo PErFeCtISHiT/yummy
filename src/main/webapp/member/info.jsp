@@ -46,7 +46,7 @@
     <script src="../js/global.js"></script>
 </head>
 <body>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
@@ -66,9 +66,33 @@
         </div>
     </div>
 </header>
-<div id="level">
-    <span>用户级别:</span>
-</div>
+<form class="am-form">
+    <fieldset>
+        <legend>个人信息</legend>
+
+        <div class="am-form-group">
+            <label for="name">姓名</label>
+            <input type="text" class="" id="name" value=<%=user.getMemberMessageEntity().getMemberName()%>>
+        </div>
+
+        <div class="am-form-group">
+            <label for="telephone">电话</label>
+            <input type="tel" class="" id="telephone"
+                   value=<%=user.getMemberMessageEntity().getTelephone()%>>
+        </div>
+        <div class="am-form-group" id="level">
+            <label>用户级别</label>
+            <br>
+            <span></span>
+        </div>
+
+
+        <div class="am-btn-group">
+            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
+            <button type="button" class="am-btn am-btn-default" onclick=modifyUser()>修改信息</button>
+        </div>
+    </fieldset>
+</form>
 <script>
     var level =<%=user.getMemberMessageEntity().getLevel()%>
     var color;
@@ -97,27 +121,5 @@
     else
         document.getElementById("level").innerHTML += '<span class="am-badge am-badge-' + color + ' am-round">' + level + '</span>';
 </script>
-<form class="am-form">
-    <fieldset>
-        <legend>个人信息</legend>
-
-        <div class="am-form-group">
-            <label for="name">姓名</label>
-            <input type="text" class="" id="name" value=<%=user.getMemberMessageEntity().getMemberName()%>>
-        </div>
-
-        <div class="am-form-group">
-            <label for="telephone">电话</label>
-            <input type="tel" class="" id="telephone"
-                   value=<%=user.getMemberMessageEntity().getTelephone()%>>
-        </div>
-
-
-        <div class="am-btn-group">
-            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
-            <button type="button" class="am-btn am-btn-default" onclick=modifyUser()>修改信息</button>
-        </div>
-    </fieldset>
-</form>
 </body>
 </html>

@@ -3,6 +3,7 @@ package yummy.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.Set;
 
 /**
@@ -22,6 +23,7 @@ public class UserEntity {
     private String salt = "";
     private String userPassword;
     private Set<ProductEntity> productEntities;
+    private Date signDate = new Date(new java.util.Date().getTime());
 
 
     @Id
@@ -118,5 +120,15 @@ public class UserEntity {
 
     public void setProductEntities(Set<ProductEntity> productEntities) {
         this.productEntities = productEntities;
+    }
+
+    @Basic
+    @Column(name = "signDate", nullable = false)
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(Date signDate) {
+        this.signDate = signDate;
     }
 }

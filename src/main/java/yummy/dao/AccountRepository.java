@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yummy.entity.AccountEntity;
 
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * @author: pis
@@ -16,4 +17,5 @@ import javax.persistence.Table;
 @Transactional
 @Table(name = "yummy_account")
 public interface AccountRepository extends JpaRepository<AccountEntity,Integer> {
+    List<AccountEntity> findByApprovedAndAccountGreaterThanEqual(Boolean approved,Double account);
 }

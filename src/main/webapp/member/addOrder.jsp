@@ -37,7 +37,7 @@
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/member.js"></script>
     <script src="../js/global.js"></script>
-    <link rel="stylesheet" type="text/css" href="../js/default.css">
+    <script src="../assets/js/amazeui.min.js"></script>
 </head>
 <script>
     var obj = <%=session.getAttribute(NamedContext.ALLPRODUCTS)%>;
@@ -45,7 +45,7 @@
     <%=request.getParameter(NamedContext.RESTAURANTID)%>
 </script>
 <body onload=loadAllProducts(obj)>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
@@ -60,10 +60,19 @@
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
         </div>
+        <div class="am-topbar-right">
+            <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+                <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="typeButton">订购单品</button>
+                <ul class="am-dropdown-content">
+                    <li><a onclick=showSingle()>订购单品</a></li>
+                    <li><a onclick=showSet()>订购套餐</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </header>
 
-<form class="am-form">
+<form class="am-form" id="single">
     <fieldset>
         <legend>订购单品</legend>
 
@@ -78,14 +87,13 @@
 
             </div>
         </div>
-
+        <div class="am-btn-group">
+            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
+            <button type="button" class="am-btn am-btn-default" onclick=addSingleOrder(restaurantId)>订购</button>
+        </div>
     </fieldset>
 </form>
-<div class="am-btn-group">
-    <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
-    <button type="button" class="am-btn am-btn-default" onclick=addSingleOrder(restaurantId)>订购</button>
-</div>
-<form class="am-form">
+<form class="am-form" id="set" hidden>
     <fieldset>
         <legend>订购套餐</legend>
 

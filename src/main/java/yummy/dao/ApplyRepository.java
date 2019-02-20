@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yummy.entity.ApplyEntity;
 
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * @author: pis
@@ -16,4 +17,5 @@ import javax.persistence.Table;
 @Transactional
 @Table(name = "restaurant_apply")
 public interface ApplyRepository extends JpaRepository<ApplyEntity,Integer> {
+    List<ApplyEntity> findByApproved(Boolean approved);
 }

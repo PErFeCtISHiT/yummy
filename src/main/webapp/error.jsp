@@ -73,7 +73,7 @@
     <script src="js/global.js"></script>
 </head>
 <body>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="login.jsp">yummy!</a>
     </h1>
@@ -84,7 +84,7 @@
     </div>
 </header>
 <div style="position: relative;top:2em;float: top">
-    <a class="am-badge am-badge-secondary am-round am-text-lg">错误: <%=errorMessage%></a>
+    <a class="am-badge am-badge-danger am-round am-text-lg">错误: <%=errorMessage%></a>
 </div>
 </body>
 </html>

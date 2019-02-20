@@ -1,7 +1,9 @@
 package yummy.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * @author: pis
@@ -17,7 +19,8 @@ public class ApplyEntity {
     private String addressName;
     private Double longitude;
     private Double latitude;
-    private Date applyDate = new java.sql.Date(new Date().getTime());
+    private RestaurantMessageEntity restaurantMessageEntity;
+    private Date applyDate = new Date(new java.util.Date().getTime());
     private boolean approved = false;
 
     @Id
@@ -97,5 +100,16 @@ public class ApplyEntity {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
+    public RestaurantMessageEntity getRestaurantMessageEntity() {
+        return restaurantMessageEntity;
+    }
+
+    public void setRestaurantMessageEntity(RestaurantMessageEntity restaurantMessageEntity) {
+        this.restaurantMessageEntity = restaurantMessageEntity;
     }
 }

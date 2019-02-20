@@ -33,24 +33,21 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>选择餐厅</title>
+    <title>审批餐厅信息</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/member.js"></script>
+    <script src="../js/user/manager.js"></script>
     <script src="../js/global.js"></script>
 </head>
 <script>
-    var obj = <%=session.getAttribute(NamedContext.RESTAURANT)%>;
-    var page = <%=request.getParameter(NamedContext.PAGE)%>;
+    applies = <%=session.getAttribute(NamedContext.APPLIES)%>
 </script>
-<body onload=loadRestaurants()>
+<body onload=loadApplies()>
 <header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
 
-
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
-
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
@@ -59,13 +56,18 @@
         </div>
     </div>
 </header>
+<form class="am-form">
+    <fieldset>
+        <legend>餐厅信息</legend>
 
-<ul id="gallery" data-am-widget="gallery" class="am-gallery am-avg-sm-2
-  am-avg-md-3 am-avg-lg-4 am-gallery-default" data-am-gallery="{ pureview: true }" >
+        <div>
+            <div id="apply">
 
-</ul>
+            </div>
+        </div>
 
-<ul id="page" class="am-pagination" style="position: relative;top: 5em;float: left"></ul>
 
+    </fieldset>
+</form>
 </body>
 </html>

@@ -1,4 +1,3 @@
-<%@ page import="yummy.util.NamedContext" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -33,39 +32,38 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>选择餐厅</title>
+    <link rel="stylesheet" href="../assets/css/bg.css">
+    <title>经理主页</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/member.js"></script>
+    <script src="../js/user/manager.js"></script>
     <script src="../js/global.js"></script>
 </head>
-<script>
-    var obj = <%=session.getAttribute(NamedContext.RESTAURANT)%>;
-    var page = <%=request.getParameter(NamedContext.PAGE)%>;
-</script>
-<body onload=loadRestaurants()>
+<body>
 <header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
 
-
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
-
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=checkRestaurantApply()>审批餐厅信息</button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=clearAccount()>结算</button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Restaurant')>查看餐厅统计</button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Member')>查看会员统计</button>
+        </div>
+        <div class="am-topbar-right">
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Yummy')>查看yummy财务</button>
         </div>
     </div>
 </header>
-
-<ul id="gallery" data-am-widget="gallery" class="am-gallery am-avg-sm-2
-  am-avg-md-3 am-avg-lg-4 am-gallery-default" data-am-gallery="{ pureview: true }" >
-
-</ul>
-
-<ul id="page" class="am-pagination" style="position: relative;top: 5em;float: left"></ul>
-
 </body>
 </html>

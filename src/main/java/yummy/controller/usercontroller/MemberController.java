@@ -285,9 +285,9 @@ public class MemberController {
         }
         memberMessageEntity.setBalance(memberMessageEntity.getBalance() - pay);
         memberMessageEntity.setConsume(memberMessageEntity.getConsume() + pay);
-        memberMessageEntity.setLevel((int) (Math.log(memberMessageEntity.getConsume()) / Math.log(10)));
+        memberMessageEntity.setLevel((int) (Math.log(memberMessageEntity.getConsume()) / Math.log(10)) + 1);
         orderEntity.setStatus(NamedContext.PAYED);
-        if (!managerService.makeAccount(pay) || !memberService.saveMemberMessage(memberMessageEntity) || !orderService.modify(orderEntity)) {
+        if (!managerService.makeAccount(pay,orderEntity.getRestaurant().getRestaurantMessageEntity()) || !memberService.saveMemberMessage(memberMessageEntity) || !orderService.modify(orderEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
@@ -403,11 +403,7 @@ public class MemberController {
         OrderEntity orderEntity = (OrderEntity) orderService.findByID(orderId);
         JSONObject ret = new JSONObject();
         orderEntity.setStatus(NamedContext.DELIVERED);
-        double pay = (orderEntity.getPrice() * (1 - orderEntity.getDiscount())) * 0.95;
-        UserEntity restaurant = orderEntity.getRestaurant();
-        RestaurantMessageEntity restaurantMessageEntity = restaurant.getRestaurantMessageEntity();
-        restaurantMessageEntity.setBalance(restaurantMessageEntity.getBalance() + pay);
-        if (!managerService.makeAccount(-pay) || !orderService.modify(orderEntity) || !restaurantService.saveRestaurantMessage(restaurantMessageEntity)) {
+        if (!orderService.modify(orderEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
             ret.put(NamedContext.MES, NamedContext.SUCCESS);

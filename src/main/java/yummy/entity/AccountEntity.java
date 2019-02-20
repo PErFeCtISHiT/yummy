@@ -1,6 +1,7 @@
 package yummy.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import yummy.util.JsonHelper;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -15,9 +16,11 @@ import java.sql.Date;
 public class AccountEntity {
     private Integer id;
     private Double account;
-    private Date account_date = new Date(new java.util.Date().getTime());
+    private Date accountDate = new Date(new java.util.Date().getTime());
+    private boolean approved = false;
     private YummyEntity yummyEntity;
-
+    private RestaurantMessageEntity restaurantMessageEntity;
+    private String restaurantName;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -32,7 +35,7 @@ public class AccountEntity {
     @Basic
     @Column(name = "yummy_account",nullable = false)
     public Double getAccount() {
-        return account;
+        return JsonHelper.scale(account);
     }
 
     public void setAccount(Double account) {
@@ -41,12 +44,12 @@ public class AccountEntity {
 
     @Basic
     @Column(name = "account_date",nullable = false)
-    public Date getAccount_date() {
-        return account_date;
+    public Date getAccountDate() {
+        return accountDate;
     }
 
-    public void setAccount_date(Date account_date) {
-        this.account_date = account_date;
+    public void setAccountDate(Date accountDate) {
+        this.accountDate = accountDate;
     }
 
 
@@ -60,5 +63,35 @@ public class AccountEntity {
 
     public void setYummyEntity(YummyEntity yummyEntity) {
         this.yummyEntity = yummyEntity;
+    }
+
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
+    public RestaurantMessageEntity getRestaurantMessageEntity() {
+        return restaurantMessageEntity;
+    }
+
+    public void setRestaurantMessageEntity(RestaurantMessageEntity restaurantMessageEntity) {
+        this.restaurantMessageEntity = restaurantMessageEntity;
+    }
+
+    @Basic
+    @Column(name = "approved",nullable = false)
+    public boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 }

@@ -32,13 +32,14 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="../assets/css/bg.css">
     <title>餐厅主页</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/restaurant.js"></script>
     <script src="../js/global.js"></script>
 </head>
 <body>
-<header class="am-topbar">
+<header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>

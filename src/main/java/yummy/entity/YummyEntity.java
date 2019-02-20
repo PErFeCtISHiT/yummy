@@ -1,6 +1,7 @@
 package yummy.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import yummy.util.JsonHelper;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class YummyEntity {
     @Basic
     @Column(name = "yummy_balance",nullable = false)
     public Double getBalance() {
-        return balance;
+        return JsonHelper.scale(balance);
     }
 
     public void setBalance(Double balance) {
