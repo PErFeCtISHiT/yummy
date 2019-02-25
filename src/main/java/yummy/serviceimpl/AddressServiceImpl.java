@@ -3,6 +3,7 @@ package yummy.serviceimpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yummy.dao.AddressRepository;
+import yummy.dao.UserRepository;
 import yummy.entity.AddressEntity;
 import yummy.service.AddressService;
 

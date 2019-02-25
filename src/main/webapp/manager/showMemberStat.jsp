@@ -1,5 +1,10 @@
 <%@ page import="yummy.util.NamedContext" %>
+<%@ page import="org.json.JSONArray" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    JSONArray array = new JSONArray(session.getAttribute(NamedContext.MEMBER).toString());
+    Integer memberNum = array.length();
+%>
 <html>
 <head>
     <meta charset="utf-8">
@@ -33,81 +38,67 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>订购</title>
+    <title>会员统计</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/member.js"></script>
+    <script src="../js/echarts.common.min.js"></script>
+    <script src="../js/user/manager.js"></script>
     <script src="../js/global.js"></script>
-    <script src="../assets/js/amazeui.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+    <script type="text/javascript"
+            src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+    <script type="text/javascript"
+            src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=3.0&ak=1Wg79yDG3F19q9MRVQSzrA187VO2Y9Dg"></script>
 </head>
 <script>
-    var obj = <%=session.getAttribute(NamedContext.ALLPRODUCTS)%>;
-    var restaurantId =
-    <%=request.getParameter(NamedContext.RESTAURANTID)%>
-    var page = <%=request.getParameter(NamedContext.PAGE)%>;
+    members = <%=session.getAttribute(NamedContext.MEMBER)%>;
+    memberLevel = <%=session.getAttribute(NamedContext.MEMBERLEVEL)%>;
+    addresses = <%=session.getAttribute(NamedContext.ADDRESS)%>;
 </script>
-<body onload=loadAllProducts(obj)>
+<body onload=loadMemberCharts()>
 <header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
     </h1>
 
-
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
-
         <div class="am-topbar-right">
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
-
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
-        </div>
-        <div class="am-topbar-right">
-            <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
-                <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="typeButton">订购单品</button>
-                <ul class="am-dropdown-content">
-                    <li><a onclick=showSingle()>订购单品</a></li>
-                    <li><a onclick=showSet()>订购套餐</a></li>
-                </ul>
-            </div>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>
+                返回
+            </button>
         </div>
     </div>
 </header>
-
-<form class="am-form" id="single">
+<form class="am-form">
     <fieldset>
-        <legend>订购单品</legend>
+        <legend>会员统计</legend>
 
         <div class="am-form-group">
-            <label for="price">总价</label>
-            <input type="number" value="0.0" min="0.0" step="0.01" class="" id="price" contenteditable="false">
+            <label for="num">会员总数</label>
+            <span id="num"><%=memberNum%></span>
         </div>
         <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-        <div>
-            <label for="product">添加单品</label>
-            <div id="product">
-
-            </div>
+        <div class="am-form-group">
+            <label for="sign">注册月份分布</label>
+            <div id="sign" style="width: 600px;height:400px;"></div>
         </div>
         <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-        <ul id="page" class="am-pagination"></ul>
+        <div class="am-form-group">
+            <label for="type">会员等级占比图</label>
+            <div id="type" style="width: 600px;height:400px;"></div>
+        </div>
         <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-        <div class="am-btn-group">
-            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>取消</button>
-            <button type="button" class="am-btn am-btn-default" onclick=addSingleOrder(restaurantId)>订购</button>
+        <div class="am-form-group">
+            <label for="address">会员分布</label>
+            <div id="address" style="width: 600px;height:400px;"></div>
         </div>
-    </fieldset>
-</form>
-<form class="am-form" id="set" hidden>
-    <fieldset>
-        <legend>订购套餐</legend>
-
-        <div>
-            <label for="order">选择套餐</label>
-            <div id="order">
-
-            </div>
-        </div>
-
 
     </fieldset>
 </form>

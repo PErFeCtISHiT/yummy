@@ -104,9 +104,9 @@ function loadRestaurants() {
     document.getElementById("page").innerHTML = "";
     for (var i = 0; i < pageNum; i++) {
         if (i !== page)
-            document.getElementById("page").innerHTML += "<li><a href=\"/product/products.jsp?page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
+            document.getElementById("page").innerHTML += "<li><a href=\"/member/choose.jsp?page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
         else
-            document.getElementById("page").innerHTML += "<li class=\"am-active\"><a href=\"/product/products.jsp?page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
+            document.getElementById("page").innerHTML += "<li class=\"am-active\"><a href=\"/member/choose.jsp?page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
 
     }
     document.getElementById("gallery").innerHTML = "";
@@ -133,7 +133,7 @@ function getProducts(id) {
                 if (data.message === 'failed') {
                     window.location.href = '/error.jsp'
                 } else {
-                    window.location.href = '/member/addOrder.jsp?restaurantId=' + id;
+                    window.location.href = '/member/addOrder.jsp?restaurantId=' + id + '&page=0';
                 }
             }
         }
@@ -145,8 +145,16 @@ var orderProducts = [];
 function loadAllProducts(obj) {
     var products = obj.products;
     var orders = obj.orders;
+    var pageNum = parseInt((products.length + 5) / 6);
+    document.getElementById("page").innerHTML = "";
+    for (var i = 0; i < pageNum; i++) {
+        if (i !== page)
+            document.getElementById("page").innerHTML += "<li><a href=\"/member/addOrder.jsp?restaurantId="+restaurantId+"&page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
+        else
+            document.getElementById("page").innerHTML += "<li class=\"am-active\"><a href=\"/member/addOrder.jsp?restaurantId="+restaurantId+"&page=" + i + "\">" + (i + 1) + "</a></a></li>\n";
+    }
     document.getElementById("product").innerHTML = "";
-    for (var i = 0; i < products.length; i++) {
+    for (var i = page * 6, j = 0; i < products.length && j < 6; i++, j++) {
         document.getElementById("product").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
             "        <h3 class=\"am-panel-title\">商品名称:" + products[i].productName + "</h3>\n" +
@@ -163,7 +171,7 @@ function loadAllProducts(obj) {
     for (var i = 0; i < orders.length; i++) {
         document.getElementById("order").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
-            "        <h3 class=\"am-panel-title\">" + orders[i].orderName + "</h3>\n" +
+            "        <h3 class=\"am-panel-title\">" + orders[i].orderName + ":" + orders[i].price + "元" + "</h3>\n" +
             "    </header>\n" +
             "    <div class=\"am-panel-bd\" id="+orders[i].id+">\n";
         document.getElementById("order").innerHTML +=    "    </div>\n" +

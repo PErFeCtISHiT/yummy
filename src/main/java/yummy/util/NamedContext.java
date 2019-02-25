@@ -56,4 +56,8 @@ public class NamedContext {
     public static final String MEMBERLEVEL = "memberLevel";
     public static final String APPLIES = "applies";
     public static final String ACCOUNT = "account";
+    public static final String NAME = "name";
+    public static final String VALUE = "value";
+    public static final String YUMMY = "yummy";
+    public static final String ADDRESSERROR = "addressError";
 }

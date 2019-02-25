@@ -11,7 +11,10 @@
     for (AddressEntity addressEntity : addressEntitySet) {
         addressEntity.setMemberMessageEntity(null);
     }
-    Integer addressId = user.getMemberMessageEntity().getMainAddress().getId();
+    Integer addressId = 0;
+    if(user.getMemberMessageEntity().getMainAddress() != null) {
+        addressId = user.getMemberMessageEntity().getMainAddress().getId();
+    }
     JSONArray addressJsonArray = new JSONArray(addressEntitySet);
 %>
 <html>

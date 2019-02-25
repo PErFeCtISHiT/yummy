@@ -17,12 +17,14 @@ import yummy.entity.RestaurantMessageEntity;
 import yummy.entity.UserEntity;
 import yummy.service.RestaurantService;
 import yummy.service.UserService;
+import yummy.util.AddressHelper;
 import yummy.util.JsonHelper;
 import yummy.util.NamedContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -69,11 +71,9 @@ public class HomeController {
         msg.put(NamedContext.MES, NamedContext.SUCCESS);
         if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.MEMBER)){
             List<RestaurantMessageEntity> restaurantMessageEntities = restaurantService.findAllRestaurantMessages();
-            for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
-                restaurantMessageEntity.setAddressEntity(null);
-                restaurantMessageEntity.setRestaurantEntity(null);
-            }
-            JSONArray array = new JSONArray(restaurantMessageEntities);
+            List<RestaurantMessageEntity> restaurantMessageEntityList = new ArrayList<>();
+            MemberController.addRestaurant(userEntity, restaurantMessageEntities, restaurantMessageEntityList);
+            JSONArray array = new JSONArray(restaurantMessageEntityList);
             request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
         }
         if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.RESTAURANT)){

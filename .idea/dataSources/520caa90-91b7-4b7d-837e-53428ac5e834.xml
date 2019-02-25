@@ -1406,104 +1406,89 @@
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="325" parent="244" name="member_id">
-      <Position>5</Position>
-      <DataType>int(11)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="326" parent="244" name="FKi9871vscghry28o6nv5tx4sr6">
-      <ColNames>member_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="327" parent="244" name="PRIMARY">
+    <key id="325" parent="244" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="328" parent="244" name="FKi9871vscghry28o6nv5tx4sr6">
-      <ColNames>member_id</ColNames>
-      <RefSchemaName>yummy</RefSchemaName>
-      <RefTableName>member_message</RefTableName>
-      <RefColNames>id</RefColNames>
-    </foreign-key>
-    <column id="329" parent="245" name="id">
+    <column id="326" parent="245" name="id">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="330" parent="245" name="yummy_balance">
+    <column id="327" parent="245" name="yummy_balance">
       <Position>2</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="331" parent="245" name="PRIMARY">
+    <key id="328" parent="245" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="332" parent="246" name="id">
+    <column id="329" parent="246" name="id">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="333" parent="246" name="account_date">
+    <column id="330" parent="246" name="account_date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="334" parent="246" name="yummy_id">
+    <column id="331" parent="246" name="yummy_id">
       <Position>3</Position>
       <DataType>int(11)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="335" parent="246" name="yummy_account">
+    <column id="332" parent="246" name="yummy_account">
       <Position>4</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="336" parent="246" name="restaurant_id">
+    <column id="333" parent="246" name="restaurant_id">
       <Position>5</Position>
       <DataType>int(11)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="337" parent="246" name="approved">
+    <column id="334" parent="246" name="approved">
       <Position>6</Position>
       <DataType>bit(1)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="338" parent="246" name="restaurant_name">
+    <column id="335" parent="246" name="restaurant_name">
       <Position>7</Position>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="339" parent="246" name="FKvd339bbqswjhc7flikcakfhw">
+    <index id="336" parent="246" name="FKvd339bbqswjhc7flikcakfhw">
       <ColNames>yummy_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="340" parent="246" name="FK3h5s2m6i5ewr8f5gt7bel4cyy">
+    <index id="337" parent="246" name="FK3h5s2m6i5ewr8f5gt7bel4cyy">
       <ColNames>restaurant_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="341" parent="246" name="PRIMARY">
+    <key id="338" parent="246" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="342" parent="246" name="FKvd339bbqswjhc7flikcakfhw">
+    <foreign-key id="339" parent="246" name="FKvd339bbqswjhc7flikcakfhw">
       <ColNames>yummy_id</ColNames>
       <RefSchemaName>yummy</RefSchemaName>
       <RefTableName>yummy</RefTableName>
       <RefColNames>id</RefColNames>
     </foreign-key>
-    <foreign-key id="343" parent="246" name="FK3h5s2m6i5ewr8f5gt7bel4cyy">
+    <foreign-key id="340" parent="246" name="FK3h5s2m6i5ewr8f5gt7bel4cyy">
       <ColNames>restaurant_id</ColNames>
       <RefSchemaName>yummy</RefSchemaName>
       <RefTableName>restaurant_message</RefTableName>

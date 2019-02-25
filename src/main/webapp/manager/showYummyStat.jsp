@@ -1,4 +1,8 @@
+<%@ page import="yummy.util.NamedContext" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    Double account = (Double) session.getAttribute(NamedContext.YUMMY);
+%>
 <html>
 <head>
     <meta charset="utf-8">
@@ -32,12 +36,16 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <title>添加单品</title>
+    <title>Yummy!财务情况</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
-    <script src="../js/user/restaurant.js"></script>
+    <script src="../js/echarts.common.min.js"></script>
+    <script src="../js/user/manager.js"></script>
     <script src="../js/global.js"></script>
 </head>
-<body>
+<script>
+    yummyAccounts = <%=session.getAttribute(NamedContext.ACCOUNT)%>;
+</script>
+<body onload=loadYummyCharts()>
 <header class="am-topbar am-topbar-inverse">
     <h1 class="am-topbar-brand">
         <a href="../login.jsp">yummy!</a>
@@ -54,44 +62,16 @@
 </header>
 <form class="am-form">
     <fieldset>
-        <legend>添加单品</legend>
+        <legend>财务情况</legend>
 
         <div class="am-form-group">
-            <label for="name">名称</label>
-            <input type="text" value="名称" class="" id="name">
+            <label for="num">Yummy总资产</label>
+            <span id="num"><%=account%>元</span>
         </div>
-
+        <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
         <div class="am-form-group">
-            <label for="num">数量</label>
-            <input type="number" value="0" min="0" class="" id="num">
-        </div>
-
-        <div class="am-form-group">
-            <label for="price">单价</label>
-            <input type="number" value="0.0" min="0.0" step="0.01" class="" id="price">
-        </div>
-
-        <div class="am-form-group">
-            <label for="type1">类型</label>
-            <label class="am-radio-inline" id="type1">
-                <input type="radio" value="美食" name="docInlineRadio"> 美食
-            </label>
-            <label class="am-radio-inline" id="type2">
-                <input type="radio" value="饮品" name="docInlineRadio"> 饮品
-            </label>
-            <label class="am-radio-inline" id="type3">
-                <input type="radio" value="甜品" name="docInlineRadio"> 甜品
-            </label>
-        </div>
-
-        <div class="am-form-group">
-            <label for="date">截止日期</label>
-            <input type="date" id="date">
-        </div>
-
-        <div class="am-btn-group">
-            <button type="button" class="am-btn am-btn-default" onclick=window.location.href='mainPage.jsp'>返回</button>
-            <button type="button" class="am-btn am-btn-default" onclick=addProduct()>添加</button>
+            <label for="account">每月收支</label>
+            <div id="account" style="width: 600px;height:400px;"></div>
         </div>
     </fieldset>
 </form>

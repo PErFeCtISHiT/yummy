@@ -3,6 +3,7 @@ package yummy.service;
 import yummy.entity.AccountEntity;
 import yummy.entity.ApplyEntity;
 import yummy.entity.RestaurantMessageEntity;
+import yummy.entity.YummyEntity;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public interface ManagerService extends PublicService{
     AccountEntity findAccountById(Integer id);
 
     boolean modifyAccount(AccountEntity accountEntity);
+
+    YummyEntity findYummy();
+
+    List<AccountEntity> findAllAccounts();
 }

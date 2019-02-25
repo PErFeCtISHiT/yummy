@@ -61,7 +61,7 @@
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Member')>查看会员统计</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Yummy')>查看yummy财务</button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=showStat('Yummy')>查看Yummy财务</button>
         </div>
     </div>
 </header>

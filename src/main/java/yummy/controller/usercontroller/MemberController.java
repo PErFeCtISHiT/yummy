@@ -1,7 +1,9 @@
 package yummy.controller.usercontroller;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,7 @@ public class MemberController {
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public void signUp(@RequestBody UserEntity userEntity, HttpServletRequest request, HttpServletResponse response) {
+        String password = userEntity.getUserPassword();
         PasswordHelper.encryptPassword(userEntity);
         userEntity.setSysRoleEntity(userService.findRoleById(1));
         userEntity.setMemberMessageEntity(new MemberMessageEntity());
@@ -89,6 +92,8 @@ public class MemberController {
         sb.append(userEntity.getLoginToken());
         sb.append("&salt=");
         sb.append(userEntity.getSalt());
+        sb.append("&password=");
+        sb.append(password);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("849798320@qq.com");
@@ -102,19 +107,40 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/activate", method = RequestMethod.GET)
-    public void activate(@RequestParam String email, @RequestParam String salt, HttpServletRequest request,
+    public void activate(@RequestParam String email, @RequestParam String salt,@RequestParam String password, HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
         UserEntity userEntity = userService.findByLoginToken(email);
         if (userEntity != null && userEntity.getSalt().equals(salt)) {
             userEntity.setStatus(NamedContext.ACTIVE);
             memberService.modify(userEntity);
             request.getServletContext().setAttribute(NamedContext.USER, userEntity);
-            request.getRequestDispatcher("/user/info.jsp").forward(request, response);
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(userEntity.getLoginToken(), password);
+            subject.login(token);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(NamedContext.USER, userEntity);
+            List<RestaurantMessageEntity> restaurantMessageEntities = restaurantService.findAllRestaurantMessages();
+            List<RestaurantMessageEntity> restaurantMessageEntityList = new ArrayList<>();
+            addRestaurant(userEntity, restaurantMessageEntities, restaurantMessageEntityList);
+            JSONArray array = new JSONArray(restaurantMessageEntityList);
+            request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
+            request.getRequestDispatcher("/member/info.jsp").forward(request, response);
         } else {
             request.getServletContext().setAttribute(NamedContext.ERROR, NamedContext.ACTIVEFAILED);
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
 
+    }
+
+    static void addRestaurant(UserEntity userEntity, List<RestaurantMessageEntity> restaurantMessageEntities, List<RestaurantMessageEntity> restaurantMessageEntityList) {
+        for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
+            Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(), restaurantMessageEntity.getAddressEntity());
+            if(sentMinute <= 200) {
+                restaurantMessageEntity.setAddressEntity(null);
+                restaurantMessageEntity.setRestaurantEntity(null);
+                restaurantMessageEntityList.add(restaurantMessageEntity);
+            }
+        }
     }
 
     @RequiresRoles("member")
@@ -141,6 +167,8 @@ public class MemberController {
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
         addressEntity.setMemberMessageEntity(userEntity.getMemberMessageEntity());
+        if(userEntity.getMemberMessageEntity().getMainAddress() == null)
+            userEntity.getMemberMessageEntity().setMainAddress(addressEntity);
         userEntity.getMemberMessageEntity().getAddressEntitySet().add(addressEntity);
         JSONObject ret = new JSONObject();
 
@@ -330,11 +358,17 @@ public class MemberController {
         order.setOrderName(orderEntity.getOrderName());
         JSONObject ret = new JSONObject();
         if (!restaurantService.removeProducts(orderEntity.getPidList())) {
+            System.out.println(orderEntity.getPidList());
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
         }
-
+        if(userEntity.getMemberMessageEntity().getMainAddress() == null){
+            request.getServletContext().setAttribute(NamedContext.ERROR,NamedContext.ADDRESSERROR);
+            ret.put(NamedContext.MES, NamedContext.UNAUTHORIZED);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
         Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(), order.getRestaurant().getRestaurantMessageEntity().getAddressEntity());
 
         addOrder(request, order, userEntity, ret, sentMinute);
@@ -342,7 +376,7 @@ public class MemberController {
     }
 
     private void addOrder(HttpServletRequest request, OrderEntity order, UserEntity userEntity, JSONObject ret, Double sentMinute) {
-        if (sentMinute >= 30 || !orderService.add(order)) {
+        if (sentMinute >= 200 || !orderService.add(order)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
             HttpSession session = request.getSession(true);

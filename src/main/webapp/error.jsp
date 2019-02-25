@@ -2,7 +2,7 @@
 <%@ page import="yummy.util.NamedContext" %>
 <%
     String errorMessage;
-    switch (request.getServletContext().getAttribute("error").toString()){
+    switch (request.getServletContext().getAttribute(NamedContext.ERROR).toString()){
         case NamedContext.ACTIVEFAILED:
             errorMessage = "邮箱激活失败";
             break;
@@ -29,6 +29,9 @@
             break;
         case NamedContext.UNAUTHORIZED:
             errorMessage = "未授权";
+            break;
+        case NamedContext.ADDRESSERROR:
+            errorMessage = "未设置收货地址";
             break;
             default:
                 errorMessage = "未知错误";

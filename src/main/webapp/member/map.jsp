@@ -33,7 +33,7 @@
     // 创建地图实例
     var point = new BMap.Point(118.805871, 32.07224);
     // 创建点坐标
-    map.centerAndZoom(point, 13);
+    map.centerAndZoom(point, 12);
     // 初始化地图，设置中心点坐标和地图级别
     map.addEventListener("click", function (e) {
         var addressName = window.prompt("地址名称", "");

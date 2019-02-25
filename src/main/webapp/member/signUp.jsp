@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="../assets/css/bg.css">
     <title>会员注册</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/member.js"></script>
@@ -52,7 +53,7 @@
 <form class="am-form am-form-horizontal" style="position: relative;left:15em;top:8em;max-width: 60%">
 
     <div class="am-form-group am-form-group-sm">
-        <label for="loginTokenInput" class="am-u-sm-2 am-form-label">登陆码</label>
+        <label for="loginTokenInput" class="am-u-sm-2 am-form-label">邮箱</label>
         <div class="am-u-sm-10">
             <input type="text" name="loginToken" id="loginTokenInput" class="am-form-field">
         </div>

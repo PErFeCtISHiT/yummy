@@ -8,13 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import yummy.entity.AccountEntity;
-import yummy.entity.AddressEntity;
-import yummy.entity.ApplyEntity;
-import yummy.entity.RestaurantMessageEntity;
-import yummy.service.AddressService;
+import yummy.entity.*;
 import yummy.service.ManagerService;
 import yummy.service.RestaurantService;
+import yummy.service.UserService;
 import yummy.util.JsonHelper;
 import yummy.util.NamedContext;
 
@@ -33,11 +30,13 @@ public class ManagerController {
     private final ManagerService managerService;
 
     private final RestaurantService restaurantService;
+    private final UserService userService;
 
     @Autowired
-    public ManagerController(ManagerService managerService, RestaurantService restaurantService) {
+    public ManagerController(ManagerService managerService, RestaurantService restaurantService, UserService userService) {
         this.managerService = managerService;
         this.restaurantService = restaurantService;
+        this.userService = userService;
     }
 
     @RequiresRoles("manager")
@@ -128,16 +127,83 @@ public class ManagerController {
     @RequiresRoles("manager")
     @RequestMapping(value = "/getRestaurantStat", method = RequestMethod.GET)
     public void getRestaurantStat(HttpServletRequest request, HttpServletResponse response) {
+        List<UserEntity> userEntities = userService.findRestaurant();
+        JSONObject typeObject = new JSONObject();
+        typeObject.put("美食",0);
+        typeObject.put("饮品",0);
+        typeObject.put("甜品",0);
+        JSONArray addressArray = new JSONArray();
+        for(UserEntity userEntity : userEntities){
+            AddressEntity addressEntity = userEntity.getRestaurantMessageEntity().getAddressEntity();
+            JSONObject jsonObject = new JSONObject();
+            JSONArray array = new JSONArray();
+            array.put(addressEntity.getLongitude());
+            array.put(addressEntity.getLatitude());
+            jsonObject.put(NamedContext.NAME,userEntity.getRestaurantMessageEntity().getRestaurantName());
+            jsonObject.put(NamedContext.VALUE,array);
+            addressArray.put(jsonObject);
 
+            String type = userEntity.getRestaurantMessageEntity().getRestaurantType();
+            typeObject.put(type,typeObject.getInt(type)+1);
+            userEntity.setSysRoleEntity(null);
+            userEntity.setRestaurantMessageEntity(null);
+            userEntity.setProductEntities(null);
+        }
+        JSONArray array = new JSONArray(userEntities);
+        request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
+        request.getSession(true).setAttribute(NamedContext.RESTAURANTTYPE,typeObject);
+        request.getSession(true).setAttribute(NamedContext.ADDRESS,addressArray);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        JsonHelper.jsonToResponse(response, ret);
     }
     @RequiresRoles("manager")
     @RequestMapping(value = "/getMemberStat", method = RequestMethod.GET)
     public void getMemberStat(HttpServletRequest request, HttpServletResponse response) {
+        List<UserEntity> userEntities = userService.findMember();
+        JSONObject typeObject = new JSONObject();
+        for(int i = 0;i < 7;i++){
+            typeObject.put(String.valueOf(i+1),0);
+        }
+        JSONArray addressArray = new JSONArray();
+        for(UserEntity userEntity : userEntities){
+            AddressEntity addressEntity = userEntity.getMemberMessageEntity().getMainAddress();
+            JSONObject jsonObject = new JSONObject();
+            JSONArray array = new JSONArray();
+            array.put(addressEntity.getLongitude());
+            array.put(addressEntity.getLatitude());
+            jsonObject.put(NamedContext.NAME,userEntity.getMemberMessageEntity().getMemberName());
+            jsonObject.put(NamedContext.VALUE,array);
+            addressArray.put(jsonObject);
 
+            Integer level = userEntity.getMemberMessageEntity().getLevel();
+            typeObject.put(String.valueOf(level),typeObject.getInt(String.valueOf(level))+1);
+            userEntity.setSysRoleEntity(null);
+            userEntity.setMemberMessageEntity(null);
+            userEntity.setProductEntities(null);
+        }
+        JSONArray array = new JSONArray(userEntities);
+        request.getSession(true).setAttribute(NamedContext.MEMBER,array);
+        request.getSession(true).setAttribute(NamedContext.MEMBERLEVEL,typeObject);
+        request.getSession(true).setAttribute(NamedContext.ADDRESS,addressArray);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        JsonHelper.jsonToResponse(response, ret);
     }
     @RequiresRoles("manager")
     @RequestMapping(value = "/getYummyStat", method = RequestMethod.GET)
     public void getYummyStat(HttpServletRequest request, HttpServletResponse response) {
-
+        YummyEntity yummyEntity = managerService.findYummy();
+        List<AccountEntity> accountEntities = managerService.findAllAccounts();
+        request.getSession(true).setAttribute(NamedContext.YUMMY,yummyEntity.getBalance());
+        for(AccountEntity accountEntity : accountEntities){
+            accountEntity.setYummyEntity(null);
+            accountEntity.setRestaurantMessageEntity(null);
+        }
+        JSONArray array = new JSONArray(accountEntities);
+        request.getSession(true).setAttribute(NamedContext.ACCOUNT,array);
+        JSONObject ret = new JSONObject();
+        ret.put(NamedContext.MES, NamedContext.SUCCESS);
+        JsonHelper.jsonToResponse(response, ret);
     }
 }

@@ -8,6 +8,8 @@ import yummy.entity.SysRoleEntity;
 import yummy.entity.UserEntity;
 import yummy.service.UserService;
 
+import java.util.List;
+
 /**
  * @author: pis
  * @description: good good study
@@ -34,5 +36,17 @@ public class UserServiceImpl extends PublicServiceImpl implements UserService {
     @Override
     public SysRoleEntity findRoleById(Integer id) {
         return sysRoleRepository.findOne(id);
+    }
+
+    @Override
+    public List<UserEntity> findRestaurant() {
+        SysRoleEntity sysRoleEntity = sysRoleRepository.findOne(2);
+        return userRepository.findBySysRoleEntity(sysRoleEntity);
+    }
+
+    @Override
+    public List<UserEntity> findMember() {
+        SysRoleEntity sysRoleEntity = sysRoleRepository.findOne(1);
+        return userRepository.findBySysRoleEntity(sysRoleEntity);
     }
 }

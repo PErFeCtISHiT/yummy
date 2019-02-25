@@ -65,7 +65,7 @@
 
 </ul>
 
-<ul id="page" class="am-pagination" style="position: relative;top: 5em;float: left"></ul>
+<ul id="page" class="am-pagination" style="position: relative;float: left"></ul>
 
 </body>
 </html>

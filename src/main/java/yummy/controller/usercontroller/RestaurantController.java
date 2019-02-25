@@ -68,6 +68,9 @@ public class RestaurantController {
     @RequestMapping(value = "modifyRestaurant", method = RequestMethod.POST)
     public void modifyRestaurant(@RequestBody ApplyEntity applyEntity, HttpServletResponse response) {
         JSONObject ret = new JSONObject();
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        applyEntity.setRestaurantMessageEntity(userEntity.getRestaurantMessageEntity());
         if (!restaurantService.addApply(applyEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {

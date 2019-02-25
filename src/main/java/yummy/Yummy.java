@@ -11,8 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EntityScan(basePackages = "yummy.entity")
 @EnableJpaRepositories(basePackages = "yummy.dao")
 @EnableScheduling
-public class yummy {
+public class Yummy {
     public static void main(String[] args) {
-        SpringApplication.run(yummy.class, args);
+        SpringApplication.run(Yummy.class, args);
     }
 }

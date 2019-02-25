@@ -99,4 +99,14 @@ public class ManagerServiceImpl extends PublicServiceImpl implements ManagerServ
         }
         return true;
     }
+
+    @Override
+    public YummyEntity findYummy() {
+        return yummyRepository.findOne(1);
+    }
+
+    @Override
+    public List<AccountEntity> findAllAccounts() {
+        return accountRepository.findAll();
+    }
 }

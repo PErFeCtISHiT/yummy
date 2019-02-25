@@ -94,7 +94,7 @@
 </section>
 <section class="am-panel am-panel-default">
     <header class="am-panel-hd">
-        <h3 class="am-panel-title">支付金额</h3>
+        <h3 class="am-panel-title">支付时间</h3>
     </header>
     <div class="am-panel-bd" id="span_dt_dt">
 

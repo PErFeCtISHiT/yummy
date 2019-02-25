@@ -42,10 +42,13 @@ public class MyConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer
         //<!-- 过滤链定义，从上向下顺序执行
         //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
         filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/member/signUp.jsp", "anon");
         filterChainDefinitionMap.put("/member/signUp", "anon");
+        filterChainDefinitionMap.put("/restaurant/signUp", "anon");
         filterChainDefinitionMap.put("/assets/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
-        filterChainDefinitionMap.put("/**", "anon");
+        filterChainDefinitionMap.put("/error.jsp", "anon");
+        filterChainDefinitionMap.put("/**", "authc");
 
 
         //未授权界面
