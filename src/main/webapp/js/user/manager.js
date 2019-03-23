@@ -28,6 +28,7 @@ function loadApplies() {
         document.getElementById("apply").innerHTML += "<section class=\"am-panel am-panel-default am-panel-secondary\">\n" +
             "    <header class=\"am-panel-hd\">\n" +
             "        <h3 class=\"am-panel-title\">餐厅名称:" + applies[i].restaurantName + "</h3>\n" +
+            "        <h3 class=\"am-panel-title\">餐厅标识:" + applies[i].loginToken + "</h3>\n" +
             "    </header>\n" +
             "    <div class=\"am-panel-bd\" id=" + applies[i].id + ">\n" +
             "<span>申请日期:" + applies[i].applyDate + "</span><br>" +

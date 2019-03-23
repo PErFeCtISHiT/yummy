@@ -20,7 +20,7 @@ public class MemberMessageEntity {
     private Set<AddressEntity> addressEntitySet;
     private Integer level = 1;
     private Double consume = 0.0;
-    private Double balance = 0.0;
+    private Double balance = 500.0;
     private AddressEntity mainAddress;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

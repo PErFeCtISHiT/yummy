@@ -14,11 +14,12 @@ import java.sql.Date;
 @Table(name = "restaurant_apply",schema = "yummy")
 public class ApplyEntity {
     private Integer id;
-    private String restaurantName;
-    private String restaurantType;
-    private String addressName;
-    private Double longitude;
-    private Double latitude;
+    private String restaurantName = "未命名餐厅";
+    private String restaurantType = "美食";
+    private String addressName = "默认地址";
+    private Double longitude = 32.0;
+    private Double latitude = 119.0;
+    private String loginToken;
     private RestaurantMessageEntity restaurantMessageEntity;
     private Date applyDate = new Date(new java.util.Date().getTime());
     private boolean approved = false;
@@ -111,5 +112,15 @@ public class ApplyEntity {
 
     public void setRestaurantMessageEntity(RestaurantMessageEntity restaurantMessageEntity) {
         this.restaurantMessageEntity = restaurantMessageEntity;
+    }
+
+    @Basic
+    @Column(name = "login_token",nullable = false)
+    public String getLoginToken() {
+        return loginToken;
+    }
+
+    public void setLoginToken(String loginToken) {
+        this.loginToken = loginToken;
     }
 }

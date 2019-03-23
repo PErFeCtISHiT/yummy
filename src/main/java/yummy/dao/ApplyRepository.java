@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import yummy.entity.ApplyEntity;
+import yummy.entity.RestaurantMessageEntity;
 
 import javax.persistence.Table;
 import java.util.List;
@@ -18,4 +19,5 @@ import java.util.List;
 @Table(name = "restaurant_apply")
 public interface ApplyRepository extends JpaRepository<ApplyEntity,Integer> {
     List<ApplyEntity> findByApproved(Boolean approved);
+    List<ApplyEntity> findByApprovedAndRestaurantMessageEntity(Boolean approved, RestaurantMessageEntity restaurantMessageEntity);
 }

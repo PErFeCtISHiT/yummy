@@ -120,9 +120,11 @@ public class MemberController {
             HttpSession session = request.getSession(true);
             session.setAttribute(NamedContext.USER, userEntity);
             List<RestaurantMessageEntity> restaurantMessageEntities = restaurantService.findAllRestaurantMessages();
-            List<RestaurantMessageEntity> restaurantMessageEntityList = new ArrayList<>();
-            addRestaurant(userEntity, restaurantMessageEntities, restaurantMessageEntityList);
-            JSONArray array = new JSONArray(restaurantMessageEntityList);
+            for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
+                restaurantMessageEntity.setAddressEntity(null);
+                restaurantMessageEntity.setRestaurantEntity(null);
+            }
+            JSONArray array = new JSONArray(restaurantMessageEntities);
             request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
             request.getRequestDispatcher("/member/info.jsp").forward(request, response);
         } else {
@@ -130,17 +132,6 @@ public class MemberController {
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
 
-    }
-
-    static void addRestaurant(UserEntity userEntity, List<RestaurantMessageEntity> restaurantMessageEntities, List<RestaurantMessageEntity> restaurantMessageEntityList) {
-        for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
-            Double sentMinute = AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(), restaurantMessageEntity.getAddressEntity());
-            if(sentMinute <= 200) {
-                restaurantMessageEntity.setAddressEntity(null);
-                restaurantMessageEntity.setRestaurantEntity(null);
-                restaurantMessageEntityList.add(restaurantMessageEntity);
-            }
-        }
     }
 
     @RequiresRoles("member")
@@ -192,6 +183,11 @@ public class MemberController {
             String address = (String) o;
             AddressEntity addressEntity = addressService.findAddressByAddressName(address);
             userEntity.getMemberMessageEntity().getAddressEntitySet().removeIf(addressEntity1 -> addressEntity1.getId().equals(addressEntity.getId()));
+            if(userEntity.getMemberMessageEntity().getMainAddress().getId().equals(addressEntity.getId())){
+                System.out.println("here");
+                userEntity.getMemberMessageEntity().setMainAddress(null);
+                userService.modify(userEntity);
+            }
             addressService.delete(addressEntity);
         }
         session.setAttribute(NamedContext.USER, userEntity);
@@ -238,6 +234,19 @@ public class MemberController {
     @RequestMapping(value = "/getProducts", method = RequestMethod.GET)
     public void getProducts(@RequestParam Integer id, HttpServletRequest request, HttpServletResponse response) {
         RestaurantMessageEntity restaurantMessageEntity = restaurantService.findRestaurantMessageById(id);
+        String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
+        UserEntity userEntity = userService.findByLoginToken(loginToken);
+        JSONObject ret = new JSONObject();
+        if(userEntity.getMemberMessageEntity().getMainAddress() == null){
+            ret.put(NamedContext.MES,NamedContext.ADDRESSERROR);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
+        if(AddressHelper.calculateDistance(userEntity.getMemberMessageEntity().getMainAddress(),restaurantMessageEntity.getAddressEntity()) > 150){
+            ret.put(NamedContext.MES,NamedContext.ADDRESS);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
         UserEntity restaurant = restaurantMessageEntity.getRestaurantEntity();
         Set<ProductEntity> productEntities = restaurant.getProductEntities();
         Date date = new Date(new java.util.Date().getTime());
@@ -263,7 +272,6 @@ public class MemberController {
         object.put(NamedContext.PRODUCTS, productArray);
         object.put(NamedContext.ORDERS, orderArray);
         request.getSession(true).setAttribute(NamedContext.ALLPRODUCTS, object);
-        JSONObject ret = new JSONObject();
         ret.put(NamedContext.MES, NamedContext.SUCCESS);
         JsonHelper.jsonToResponse(response, ret);
     }
@@ -376,7 +384,7 @@ public class MemberController {
     }
 
     private void addOrder(HttpServletRequest request, OrderEntity order, UserEntity userEntity, JSONObject ret, Double sentMinute) {
-        if (sentMinute >= 200 || !orderService.add(order)) {
+        if (sentMinute >= 150 || !orderService.add(order)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
             HttpSession session = request.getSession(true);
@@ -417,12 +425,14 @@ public class MemberController {
         UserEntity userEntity = userService.findByLoginToken(loginToken);
         MemberMessageEntity memberMessageEntity = userEntity.getMemberMessageEntity();
         memberMessageEntity.setBalance(memberMessageEntity.getBalance() + cancelPrice);
+        RestaurantMessageEntity restaurantMessageEntity = orderEntity.getRestaurant().getRestaurantMessageEntity();
+        restaurantMessageEntity.setBalance(restaurantMessageEntity.getBalance() - cancelPrice);
         if (!restaurantService.addProducts(orderEntity.getPidList()) || !memberService.saveMemberMessage(memberMessageEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
             JsonHelper.jsonToResponse(response, ret);
             return;
         }
-        if (!orderService.modify(orderEntity)) {
+        if (!orderService.modify(orderEntity) || !restaurantService.saveRestaurantMessage(restaurantMessageEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
             ret.put(NamedContext.CANCELPRICE,cancelPrice);

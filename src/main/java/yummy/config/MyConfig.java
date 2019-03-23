@@ -7,17 +7,23 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import yummy.entity.AccountEntity;
+import yummy.entity.RestaurantMessageEntity;
+import yummy.service.ManagerService;
+import yummy.service.RestaurantService;
 
 import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.Method;
@@ -31,6 +37,14 @@ import java.util.concurrent.Executor;
 @EnableTransactionManagement
 public class MyConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer{
     private static final Logger log = LoggerFactory.getLogger(MyConfig.class);
+    private final ManagerService managerService;
+    private final RestaurantService restaurantService;
+
+    @Autowired
+    public MyConfig(ManagerService managerService, RestaurantService restaurantService) {
+        this.managerService = managerService;
+        this.restaurantService = restaurantService;
+    }
 
     @Bean
     public ShiroFilterFactoryBean shirFilter(DefaultWebSecurityManager securityManager) {
@@ -47,6 +61,8 @@ public class MyConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer
         filterChainDefinitionMap.put("/restaurant/signUp", "anon");
         filterChainDefinitionMap.put("/assets/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/member/inactive.jsp", "anon");
+        filterChainDefinitionMap.put("/member/activate", "anon");
         filterChainDefinitionMap.put("/error.jsp", "anon");
         filterChainDefinitionMap.put("/**", "authc");
 
@@ -172,5 +188,20 @@ public class MyConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "DELETE", "PUT")
                 .maxAge(3600);
+    }
+
+
+    @Scheduled(cron = "0 15 10 15 * ?")
+    private void clearAccount(){
+        List<AccountEntity> accountEntities = managerService.findUnApprovedAccount();
+        for(AccountEntity accountEntity : accountEntities){
+            accountEntity.setApproved(true);
+            RestaurantMessageEntity restaurantMessageEntity = accountEntity.getRestaurantMessageEntity();
+            Double account = accountEntity.getAccount() * 0.95;
+            restaurantMessageEntity.setBalance(restaurantMessageEntity.getBalance() + account);
+            restaurantService.saveRestaurantMessage(restaurantMessageEntity);
+            managerService.modifyAccount(accountEntity);
+            managerService.makeAccount(-account,restaurantMessageEntity);
+        }
     }
 }

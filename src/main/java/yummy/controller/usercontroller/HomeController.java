@@ -71,9 +71,11 @@ public class HomeController {
         msg.put(NamedContext.MES, NamedContext.SUCCESS);
         if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.MEMBER)){
             List<RestaurantMessageEntity> restaurantMessageEntities = restaurantService.findAllRestaurantMessages();
-            List<RestaurantMessageEntity> restaurantMessageEntityList = new ArrayList<>();
-            MemberController.addRestaurant(userEntity, restaurantMessageEntities, restaurantMessageEntityList);
-            JSONArray array = new JSONArray(restaurantMessageEntityList);
+            for(RestaurantMessageEntity restaurantMessageEntity : restaurantMessageEntities){
+                restaurantMessageEntity.setAddressEntity(null);
+                restaurantMessageEntity.setRestaurantEntity(null);
+            }
+            JSONArray array = new JSONArray(restaurantMessageEntities);
             request.getSession(true).setAttribute(NamedContext.RESTAURANT,array);
         }
         if(userEntity.getSysRoleEntity().getRole().equals(NamedContext.RESTAURANT)){

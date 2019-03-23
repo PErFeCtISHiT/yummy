@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" href="../assets/css/amazeui.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/bg.css">
     <title>未激活</title>
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/member.js"></script>

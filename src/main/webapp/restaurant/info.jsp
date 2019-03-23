@@ -79,13 +79,13 @@
         <div class="am-form-group">
             <label for="type1">餐厅类型</label>
             <label class="am-radio-inline" id="type1">
-                <input type="radio" value="美食" name="docInlineRadio"> 美食
+                <input type="radio" value="美食" name="docInlineRadio" id="radio1"> 美食
             </label>
             <label class="am-radio-inline" id="type2">
-                <input type="radio" value="饮品" name="docInlineRadio"> 饮品
+                <input type="radio" value="饮品" name="docInlineRadio" id="radio2"> 饮品
             </label>
             <label class="am-radio-inline" id="type3">
-                <input type="radio" value="甜品" name="docInlineRadio"> 甜品
+                <input type="radio" value="甜品" name="docInlineRadio" id="radio3"> 甜品
             </label>
         </div>
         <div class="am-form-group">
@@ -113,5 +113,19 @@
         </div>
     </fieldset>
 </form>
+<script>
+    var type = '<%=user.getRestaurantMessageEntity().getRestaurantType()%>';
+    switch (type) {
+        case '美食':
+            document.getElementById("radio1").setAttribute("checked","checked");
+            break;
+        case '饮品':
+            document.getElementById("radio2").setAttribute("checked","checked");
+            break;
+        case '甜品':
+            document.getElementById("radio3").setAttribute("checked","checked");
+            break;
+    }
+</script>
 </body>
 </html>

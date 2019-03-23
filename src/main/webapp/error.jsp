@@ -71,6 +71,7 @@
 
     <link rel="stylesheet" href="assets/css/amazeui.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/bg.css">
     <title>错误</title>
     <script src="assets/js/jquery-3.3.1.js"></script>
     <script src="js/global.js"></script>

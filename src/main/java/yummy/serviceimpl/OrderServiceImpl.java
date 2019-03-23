@@ -46,7 +46,7 @@ public class OrderServiceImpl extends PublicServiceImpl implements OrderService 
         else if(min >= 0)
             return orderEntity.getPrice() * (1 - orderEntity.getDiscount());
         else
-            return -1.0;
+            return 0.0;
     }
 
     @Override

@@ -34,7 +34,7 @@ function addAddress() {
                 longitude: map.document.getElementById("lng").innerHTML,
                 latitude: map.document.getElementById("lat").innerHTML
             };
-            document.getElementById("address").innerHTML += '<option>' + address.addressName + '</option>'
+            document.getElementById("address").innerHTML = '<option>' + address.addressName + '</option>'
         }
     }, 1000);
 }
@@ -96,7 +96,7 @@ function addProduct() {
             dataType: "json",
             success: function (data) {
                 if (data.message === 'failed') {
-                    alert('添加失败');
+                    alert('餐厅尚有未审批的信息，请等待管理员审批');
                     window.location.href = '/restaurant/mainPage.jsp'
                 } else if (data.message === 'unauthorized') {
                     window.location.href = '/error.jsp'
@@ -154,6 +154,7 @@ function addOrder() {
     var price = document.getElementById("price").value;
     var endDate = document.getElementById("date").value;
     var discount = document.getElementById("discount").value;
+    console.log(orderProducts);
     var para = {
         orderName: orderName,
         price: price,
@@ -170,7 +171,7 @@ function addOrder() {
             dataType: "json",
             success: function (data) {
                 if (data.message === 'failed') {
-                    alert('添加失败');
+                    alert('餐厅尚有未审批的信息，请等待管理员审批');
                     window.location.href = '/restaurant/mainPage.jsp'
                 } else if (data.message === 'unauthorized') {
                     window.location.href = '/error.jsp'

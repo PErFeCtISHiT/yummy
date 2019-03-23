@@ -21,14 +21,12 @@ import java.util.Set;
  */
 @Component
 public class DataGenerator implements ApplicationRunner {
-    private final MemberService memberService;
     private final ManagerService managerService;
     private final UserService userService;
     private final AddressService addressService;
     private final RestaurantService restaurantService;
     @Autowired
-    public DataGenerator(MemberService memberService, ManagerService managerService, UserService userService, AddressService addressService, RestaurantService restaurantService) {
-        this.memberService = memberService;
+    public DataGenerator(ManagerService managerService, UserService userService, AddressService addressService, RestaurantService restaurantService) {
         this.managerService = managerService;
         this.userService = userService;
         this.addressService = addressService;

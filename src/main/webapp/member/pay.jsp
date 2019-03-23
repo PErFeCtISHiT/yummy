@@ -37,7 +37,6 @@
     <script src="../assets/js/jquery-3.3.1.js"></script>
     <script src="../js/user/member.js"></script>
     <script src="../js/global.js"></script>
-    <link rel="stylesheet" type="text/css" href="../js/default.css">
 </head>
 <body>
 <header class="am-topbar am-topbar-inverse">
@@ -52,7 +51,7 @@
             <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=logout()>登出</button>
         </div>
         <div class="am-topbar-right">
-            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=window.location.href='mainPage.jsp'>返回</button>
+            <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick=payFailed(<%=session.getAttribute(NamedContext.ORDERID)%>)>返回</button>
         </div>
     </div>
 </header>
@@ -102,7 +101,7 @@
 </section>
 <script>
     var begin = new Date();
-    begin.setMinutes(begin.getMinutes() + 1);
+    begin.setMinutes(begin.getMinutes() + 2);
 
     function show_date_time() {
         window.setTimeout("show_date_time()", 1000);

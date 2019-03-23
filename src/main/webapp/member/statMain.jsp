@@ -107,10 +107,10 @@
                 <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle id="dropButton"></button>
                 <ul class="am-dropdown-content">
                     <li class="am-dropdown-header">订单类型</li>
-                    <li><a onclick=showStatMain('all',orderDate,orderDate,restaurantType)>所有订单</a></li>
-                    <li><a onclick=showStatMain('payed',orderDate,orderDate,restaurantType)>待送达</a></li>
-                    <li><a onclick=showStatMain('canceled',orderDate,orderDate,restaurantType)>已退订</a></li>
-                    <li><a onclick=showStatMain('delivered',orderDate,orderDate,restaurantType)>已送达</a></li>
+                    <li><a onclick=showStatMain('all',orderDate,orderPrice,restaurantType)>所有订单</a></li>
+                    <li><a onclick=showStatMain('payed',orderDate,orderPrice,restaurantType)>待送达</a></li>
+                    <li><a onclick=showStatMain('canceled',orderDate,orderPrice,restaurantType)>已退订</a></li>
+                    <li><a onclick=showStatMain('delivered',orderDate,orderPrice,restaurantType)>已送达</a></li>
                 </ul>
             </div>
         </div>

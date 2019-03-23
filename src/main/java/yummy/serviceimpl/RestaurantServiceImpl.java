@@ -156,4 +156,10 @@ public class RestaurantServiceImpl extends PublicServiceImpl implements Restaura
             return false;
         }
     }
+
+    @Override
+    public boolean CheckApply(RestaurantMessageEntity restaurantMessageEntity) {
+        List<ApplyEntity> applyEntities = applyRepository.findByApprovedAndRestaurantMessageEntity(false,restaurantMessageEntity);
+        return applyEntities.size() == 0;
+    }
 }

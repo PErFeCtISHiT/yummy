@@ -21,7 +21,6 @@ import yummy.util.PasswordHelper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,8 +53,11 @@ public class RestaurantController {
         String loginToken = new SimpleHash(algorithmName, userEntity.getId().toString()).toHex().substring(0, 7);
         userEntity.setLoginToken(loginToken);
         PasswordHelper.encryptPassword(userEntity);
+        ApplyEntity applyEntity = new ApplyEntity();
+        applyEntity.setRestaurantMessageEntity(userEntity.getRestaurantMessageEntity());
+        applyEntity.setLoginToken(userEntity.getLoginToken());
         JSONObject ret = new JSONObject();
-        if (!userService.modify(userEntity)) {
+        if (!userService.modify(userEntity) || !restaurantService.addApply(applyEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
@@ -71,6 +73,7 @@ public class RestaurantController {
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
         applyEntity.setRestaurantMessageEntity(userEntity.getRestaurantMessageEntity());
+        applyEntity.setLoginToken(userEntity.getLoginToken());
         if (!restaurantService.addApply(applyEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
         } else {
@@ -81,10 +84,18 @@ public class RestaurantController {
 
     @RequiresRoles("restaurant")
     @RequestMapping(value = "addProduct", method = RequestMethod.POST)
-    public void addProduct(@RequestBody ProductEntity productEntity, HttpServletResponse response) {
+    public void addProduct(@RequestBody ProductEntity productEntity,HttpServletRequest request, HttpServletResponse response) {
         JSONObject ret = new JSONObject();
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
+        if(CheckApply(userEntity)){
+            ret.put(NamedContext.MES, NamedContext.FAILED);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
+        JSONArray array = (JSONArray) request.getSession(true).getAttribute(NamedContext.PRODUCTS);
+        array.put(new JSONObject(productEntity));
+        request.getSession(true).setAttribute(NamedContext.PRODUCTS,array);
         productEntity.setRestaurant(userEntity);
         if (!restaurantService.addProduct(productEntity)) {
             ret.put(NamedContext.MES, NamedContext.FAILED);
@@ -98,8 +109,14 @@ public class RestaurantController {
     @RequestMapping(value = "addOrder", method = RequestMethod.POST)
     public void addOrder(@RequestBody OrderEntity orderEntity, HttpServletResponse response) {
         JSONObject ret = new JSONObject();
+        System.out.println(orderEntity.getPidList());
         String loginToken = SecurityUtils.getSubject().getPrincipal().toString();
         UserEntity userEntity = userService.findByLoginToken(loginToken);
+        if(CheckApply(userEntity)){
+            ret.put(NamedContext.MES, NamedContext.FAILED);
+            JsonHelper.jsonToResponse(response, ret);
+            return;
+        }
         orderEntity.setRestaurant(userEntity);
         orderEntity.setPidList(restaurantService.modifyPidList(orderEntity.getPidList()));
         if (!orderService.add(orderEntity)) {
@@ -108,6 +125,9 @@ public class RestaurantController {
             ret.put(NamedContext.MES, NamedContext.SUCCESS);
         }
         JsonHelper.jsonToResponse(response, ret);
+    }
+    private boolean CheckApply(UserEntity userEntity) {
+        return !restaurantService.CheckApply(userEntity.getRestaurantMessageEntity());
     }
 
     @RequiresRoles("restaurant")
